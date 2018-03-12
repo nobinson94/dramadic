@@ -8,12 +8,11 @@
 body {
 	background: #00013e;
 }
-	.copyright-box {
-		text-align: center;
-		color: #FCEFBD;
-		padding-top: 30px;
-		background-color: #00013e;
-		padding-bottom: 30px;
-
-	}
+.copyright-box {
+	text-align: center;
+	color: #f2de7d;
+	padding-top: 30px;
+	background-color: #00013e;
+	padding-bottom: 30px;
+}
 </style>

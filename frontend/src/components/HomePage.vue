@@ -14,7 +14,10 @@
 				<div class="col-md-8 form-box">
 					<form>
 						<div class="form-group search-form text-center">
-							<input type="search" class="form-control" id="searchWord" placeholder="Search word">
+							<input type="search" class="form-control" id="wordToSearch" placeholder="Search word">
+						</div>
+						<div class="form-group search-form text-center">
+							<button class="btn btn-dramadic" v-on:click="searchWord">검색</button>
 						</div>
 					</form>
 				</div>
@@ -33,7 +36,22 @@
 </template>
 
 <script>
-
+export default {
+	data: function() {
+		return {
+			word: [] 
+		}
+	},
+	methods: {
+		searchWord: function () {
+			const url ='/api';
+			this.$http.get(`${url}/users`)
+			.then((result) => {
+				console.log(result);
+			})
+		}
+	}
+}
 </script>
 
 <style>
@@ -49,5 +67,10 @@ a {
 }
 a:hover, a:focus {
 	color: #FFFFFF;
+}
+.guide {
+  color: #f2de7d;
+  font-style: italic;
+  font-size: 20px;
 }
 </style>

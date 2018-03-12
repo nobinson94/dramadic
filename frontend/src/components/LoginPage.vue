@@ -14,13 +14,13 @@
 					<div class="form-group">
 						<label for="inputEmail" class="col-md-12 control-label"><strong>아이디</strong></label>
 						<div class="col-md-12">
-							<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+							<input type="email" class="form-control" id="inputEmail" placeholder="Email">
 	    				</div>
 	  				</div>
 	  				<div class="form-group">
 	    				<label for="inputPassword" class="col-md-12 control-label"><strong>비밀번호</strong></label>
 	    				<div class="col-md-12">
-	      					<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+	      					<input type="password" class="form-control" id="inputPassword" placeholder="Password">
 	    				</div>
 	  				</div>
 					<div class="form-group">
@@ -32,9 +32,10 @@
 					</div>
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-md-12">
-					      	<button type="submit" class="btn btn-default btn-block">로그인</button>
+					      	<button type="submit" class="btn btn-dramadic btn-block">로그인</button>
+					      	<br>
 					      	<p class="text-center">아직 계정이 없으신가요?</p>
-					      	<a href="/signup" class="btn btn-default btn-block">가입하기</a>
+					      	<a href="/#/signup" class="btn btn-dramadic btn-block">가입하기</a>
 					    </div>
 					</div>
 				</form>
@@ -44,6 +45,14 @@
 	</div>
 </template>
 
+<script>
+export default {
+	methods: {
+		
+	}
+}
+</script>
+
 <style>
 .login-box {
 	color: black;
@@ -51,4 +60,5 @@
 img {
 	max-width: 100%;
 }
+
 </style>

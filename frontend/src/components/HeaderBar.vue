@@ -1,11 +1,10 @@
 <template>
-	<div class="header-bar">
-		<div class="container-fluid">
-			<div class="row" style="height: 10px;"></div>
-			<div class="row">
-				<div class="col-md-12 guide text-center"><h4>search the words through the videos</h4></div>
-			</div>
-			<div class="d-flex">
+	<div class="header-bar container-fluid">
+		<div class="row guide-bar">
+			<div class="col-md-12 text-center">search the words through the videos</div>
+		</div>
+		<div class="row search-bar">
+			<div class="col-md-12 d-flex">
 				<div class="logo-container">
 					<a href="/"><img src="../assets/img/logo.png"></a>
 				</div>
@@ -19,9 +18,9 @@
 				</div>
 				<div class="user-info-container">
 					<a href="/#/signup">Sign Up</a>
-					or
+						or
 					<a href="/#/login">Log In</a>
-				</div>
+				</div>	
 			</div>
 		</div>
 	</div>
@@ -30,10 +29,14 @@
 <script>
 	
 </script>
+
 <style>
+img {
+	max-width: 100%;
+}
 .header-bar {
   background: #00013e;
-  height: 140px;
+  height: 120px;
 }
 .login-btn {
   color: #FCEFBD;
@@ -43,15 +46,22 @@
 .login-btn a {
 	color: #FCEFBD;
 }
-.guide {
-
+.guide-bar {
+  color: #f2de7d;
+  font-style: italic;
+  font-size: 20px;
+  padding-top: 20px;
+  height: 30px;
+}
+.search-bar {
+	height: 90px;
 }
 .logo-container {
 	padding-bottom: 5px;
 	padding-left: 20px;
 	width: 270px;
 	min-width: 270px;
-	height: 60px;
+	height: 90px;
 }
 .user-info-container {
 	text-align: right;
@@ -60,13 +70,13 @@
 	padding-left: 20px;
 	width: 250px;
 	min-width: 250px;
-	height: 50px;
+	height: 90px;
 	float: right;
 	font-size: 24px;
 	color: white;
 }
 .user-info-container a {
-	color: white;
+	color: #f2de7d;
 }
 .search-form-container {
 	padding-top: 15px;
@@ -78,10 +88,10 @@
 .search-form > input {
 	width: 100%;
 	height: 56px;
-	border: 0.5px solid white;
+	border: 3px solid #f2de7d;
     border-radius: 5px;
     background-color: #00013e;
-    color: white;
+    color: #f2de7d;
     margin-right: 8px;
     margin-top: 8px;
     padding-left: 10px;
@@ -94,7 +104,7 @@
 	border-radius: 5px;
 	background-color: #00013e;
 	color: white;
-	border: 0.5px solid white;
+	border: 3px solid #f2de7d;
 	vertical-align: middle;
 }
 </style>

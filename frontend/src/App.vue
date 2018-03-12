@@ -24,9 +24,7 @@ export default {
   height: 100%;
   z-index: 1;
 }
-.guide {
-  color: #FCEFBD;
-  font-style: italic;
-  font-size: 20px;
+.btn-dramadic {
+  background-color: #f2de7d;
 }
 </style>

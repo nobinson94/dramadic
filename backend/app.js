@@ -7,9 +7,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var session = require('express-session');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+
+var index = require('./routes');
+
+const passport = require('passport');
+const passportjs = require('./passport.js');
+const LocalStrategy = require('passport-local').Strategy;
 
 var app = express();
 
@@ -23,10 +28,16 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({ secret: 'CDDH13', resave: true, saveUninitialized: true })); // 세션 활성화
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
+passportjs.setup(passport);
+
 app.use('/', index);
-app.use('/api/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

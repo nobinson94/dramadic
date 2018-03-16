@@ -12,9 +12,9 @@ var session = require('express-session');
 
 var index = require('./routes');
 
-const passport = require('passport');
-const passportjs = require('./passport.js');
-const LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport');
+var passportjs = require('./passport.js');
+var LocalStrategy = require('passport-local').Strategy;
 
 var app = express();
 

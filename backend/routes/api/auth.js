@@ -54,7 +54,7 @@ router.post('/checkduplicate', function(req, res, next) {
 	.then((sql_result) => {
 		res.send(sql_result);
 	});
-})
+});
 
 router.post('/login', function(req, res, next) {
 
@@ -69,12 +69,17 @@ router.post('/login', function(req, res, next) {
 
     req.logIn(user, function(err) {
       if (err) { return next(err); }
-
-      return res.redirect('/');
+      return res.send(user);
     });
 
   })(req, res, next);
-})
+});
 
+router.post('/logout', function(req, res, next) {
+	req.logOut();
+  	req.session.destroy(function (err) {
+    res.send("0");
+  });
+})
 
 module.exports = router;

@@ -17,9 +17,15 @@
 					</form>
 				</div>
 				<div class="user-info-container">
-					<a href="/#/signup">Sign Up</a>
+					<template v-if="logInState">
+						{{ username }} 님
+						<button v-on:click="logout" class="btn btn-dramadic">Logout</button>
+					</template>
+					<template v-else>
+						<a href="/#/signup">Sign Up</a>
 						or
-					<a href="/#/login">Log In</a>
+						<a href="/#/login">Log In</a>
+					</template>
 				</div>	
 			</div>
 		</div>
@@ -27,6 +33,37 @@
 </template>
 
 <script>
+
+export default {
+	data: function() {
+		return {
+			
+		}
+	},
+	computed: {
+		logInState() {
+			return this.$store.getters.getLogInState;
+		},
+		username() {
+			return this.$store.getters.getName;
+		},
+		userid() {
+			return this.$store.getters.getId;
+		}
+	},
+	methods: {
+		logout() {
+			this.$http.post('/api/auth/logout')
+			.then((res) => {
+				localStorage.setItem('user_id', '');
+				localStorage.setItem('user_name', '');
+				localStorage.setItem('is_logged_in', false);
+				alert("로그아웃되셧습니다.");
+				location.reload();
+			});
+		}
+	}
+}
 	
 </script>
 

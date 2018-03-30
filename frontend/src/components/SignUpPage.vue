@@ -46,11 +46,11 @@
 					<div class="form-group row">
 						<label for="id" class="col-md-12 control-label"><strong>아이디</strong></label>
 						<div class="col-md-8">
-							<input type="text" class="form-control" v-model="user.id" placeholder="id" v-on:blur="isID" v-on:change="makeIDFlag0">
+							<input type="text" class="form-control" v-model="user.email" placeholder="email" v-on:blur="isEmail" v-on:change="makeIDFlag0">
 	    				</div>
 	    				<div class="col-md-2"><button v-on:click="checkDuplicate" class="btn btn-dramadic">중복체크</button></div>
-	    				<span class="col-md-12" v-if="checkID===1">아이디가 너무 짧습니다.</span>
-	    				<span class="col-md-12" v-if="noID===1 && user.id===''">아이디를 입력해주세요.</span>
+	    				<span class="col-md-12" v-if="checkID===1">이메일형식에 맞게 적어주세요.</span>
+	    				<span class="col-md-12" v-if="noEmail===1 && user.email===''">아이디를 입력해주세요.</span>
 					</div>
 					<div class="form-group row">
 						<label for="password" class="col-md-12 control-label"><strong>비밀번호</strong></label>
@@ -73,12 +73,6 @@
 							<input type="text" class="form-control" v-model="user.name" placeholder="name" v-on:blur="isName">
 	    				</div>
 		    			<span class="col-md-12" v-if="noName===1 && user.name===''">이름을 입력해주세요.</span>
-					</div>
-					<div class="form-group row">
-						<label for="email" class="col-md-12 control-label"><strong>이메일</strong></label>
-						<div class="col-md-12">
-							<input type="text" class="form-control" v-model="user.email" placeholder="email">
-	    				</div>
 					</div>
 					<div class="form-group row">
 						<label for="address" class="col-md-12 control-label"><strong>주소</strong></label>
@@ -107,19 +101,19 @@ export default {
 		return {
 			signupType: 0,
 			user : {
-				id: '',
+				email: '',
 				password: '',
 				passwordcheck: '',
 				name: '',
 				address: '',
-				email: '',
 			},
-			idCheck: 0,
+			emailCheck: 0,
 			noName: 0,
-			noID: 0,
+			noEmail: 0,
 			noPassword: 0,
 		}
 	},
+	
 	computed: {
 		checkPassword: function() {
 			var user_info = this.user;
@@ -137,12 +131,12 @@ export default {
 			if (pw !== pw_check) return 1;
 			else return 2;
 		},
-		checkID: function() {
+		checkEmail: function() {
 			var user_info = this.user;
-			var id = user_info.id;
+			var email = user_info.email;
 
-			if (id === '') return 0;
-			else if (id.length <= 5) return 1; //아이디가 너무 짧습니다.
+			if (email === '') return 0;
+			else if (email.length <= 5) return 1; //이메일 형식에 맞지 않습니다.
 			else return 2;
 		},
 		checkName: function() {
@@ -156,28 +150,28 @@ export default {
 	methods: {
 		checkDuplicate() {
 			var user_info = this.user;
-			var id = user_info.id;
+			var email = user_info.email;
 
-			if (id === '') alert("아이디를 입력하세요.");
-			else if (id.length <= 5) alert("아이디가 너무 짧습니다.");
+			if (email === '') alert("이메일을 입력하세요.");
+			else if (email.length <= 5) alert("이메일 형식에 맞게 입력하세요.");
 			else {
-				this.$http.post('/api/auth/checkduplicate', {id: id})
+				this.$http.post('/api/auth/checkduplicate', {id: email})
 				.then((response) => {
 					if (response.data.length === 0) {
 						alert("사용가능합니다.");
-						this.idCheck = 1;
+						this.emailCheck = 1;
 					} else {
 						alert("이미 사용중인 아이디입니다.");
-						this.idCheck = 0;
+						this.emailCheck = 0;
 					}
 				})
 			}
 		},
-		isID() {
+		isEmail() {
 			var user_info = this.user;
-			var id = user_info.id;
+			var id = user_info.email;
 
-			if(id === '') this.noID = 1;
+			if(id === '') this.noEmail = 1;
 		},
 		isPassword() {
 			var user_info = this.user;
@@ -192,14 +186,14 @@ export default {
 			if(name === '') this.noName = 1;
 		},
 		makeIDFlag0() {
-			this.idCheck = 0;
+			this.emailCheck = 0;
 		},
 		signupSubmit() {
 			var user_info = this.user;
 
-			if (user_info.id === '') alert("아이디를 입력하세요.");
-			else if (user_info.id.length <= 5) alert("아이디가 너무 짧습니다.");
-			else if (this.idCheck === 0) alert("아이디 중복체크를 해주세요.");
+			if (user_info.email === '') alert("이메일을 입력하세요.");
+			else if (user_info.email.length <= 5) alert("이메일 형식이 맞지 않습니다.");
+			else if (this.emailCheck === 0) alert("이메일 중복체크를 해주세요.");
 			else if (user_info.password === '') alert("비밀번호를 입력하세요.");
 			else if (user_info.password.length <= 7) alert("비밀번호가 너무 짧습니다.");
 			else if (user_info.password !== user_info.passwordcheck) alert("비밀번호 확인이 일치하지 않습니다.");
@@ -209,20 +203,20 @@ export default {
 				.then((response) => {
 					if (parseInt(response.data) == 0) {
 						alert('Dramadic의 회원이 되신 것을 축하합니다!');
-						location.reload();
+						this.$router.replace('/');
 					} 
 				})
 			}
 
 		},
 		cancel() {
-			history.back();
+			router.go(-1);
 		},
 	}
 }
 </script>
 
-<style>
+<style scoped>
 .signupTypeBox {
 	height: 50px;
 }

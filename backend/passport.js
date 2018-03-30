@@ -20,7 +20,7 @@ exports.setup = function (passport) {
   	},
   	function(email, password, done) {
 
-  		let user_id	= mysql.escape(email);
+  		let user_email	= mysql.escape(email);
       let user_pw = mysql.escape(password);
   		let conn;
 
@@ -30,26 +30,26 @@ exports.setup = function (passport) {
 
   			let sql = `
   				SELECT *
-  				FROM user_info
-  				WHERE user_id = ${user_id}
+  				FROM USER_INFO_TB
+  				WHERE USER_ID = ${user_email}
   			`;
 
   			return conn.query(sql);
   		})
   		.then((sql_result) => {
   			if(sql_result.length > 0) {
-  				let pw = sql_result[0]['user_pw'];
-  				let salt = sql_result[0]['salt'];
+  				let pw = sql_result[0]['USER_PW'];
+  				let salt = sql_result[0]['SALT'];
 
   				var userHashPass = crypto.createHash("sha512").update(password + salt).digest("hex").toString();
          
   				if(userHashPass === pw) {
   					let session = {
-                	'USER_ID' : sql_result[0]['user_id'],
-                	'USER_NAME' : sql_result[0]['user_name'],
+                	'USER_ID' : sql_result[0]['USER_ID'],
+                	'USER_NAME' : sql_result[0]['USER_NAME'],
                 	};
 
-              		conn.query(`UPDATE user_info SET recent_login = now() WHERE user_id = '${sql_result[0]['user_id']}'`);
+              		conn.query(`UPDATE USER_INFO_TB SET RECENT_LOGIN_DT = now() WHERE USER_ID = '${sql_result[0]['USER_ID']}'`);
               		db.releaseConnection(conn);
              		return done(null, session);
   				} else {

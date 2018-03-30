@@ -6,20 +6,20 @@
 		<div class="row search-bar">
 			<div class="col-md-12 d-flex">
 				<div class="logo-container">
-					<a href="/"><img src="../assets/img/logo.png"></a>
+					<router-link :to="{path: '/'}"><img src="../assets/img/logo.png"></router-link>
 				</div>
 				<div class="search-form-container">
 					<form class="d-flex search-form">
-						<input type="search" id="searchWord" placeholder="Search word">
-						<button class="search-btn">
+						<input type="search" id="searchWord" placeholder="Search Word" v-model="targetWord">
+						<button v-on:click="search" class="search-btn">
 							<img src="../assets/img/search.png">
 						</button>
 					</form>
 				</div>
 				<div class="user-info-container">
 					<template v-if="logInState">
-						{{ username }} 님
-						<button v-on:click="logout" class="btn btn-dramadic">Logout</button>
+						{{ username }}님 반갑습니다!
+						<a href="" v-on:click="logout" >Logout</a>
 					</template>
 					<template v-else>
 						<a href="/#/signup">Sign Up</a>
@@ -33,13 +33,9 @@
 </template>
 
 <script>
+import SearchPage from './SearchPage.vue'
 
 export default {
-	data: function() {
-		return {
-			
-		}
-	},
 	computed: {
 		logInState() {
 			return this.$store.getters.getLogInState;
@@ -55,19 +51,32 @@ export default {
 		logout() {
 			this.$http.post('/api/auth/logout')
 			.then((res) => {
-				localStorage.setItem('user_id', '');
-				localStorage.setItem('user_name', '');
-				localStorage.setItem('is_logged_in', false);
+				sessionStorage.setItem('user_id', '');
+				sessionStorage.setItem('user_name', '');
+				sessionStorage.setItem('is_logged_in', 'false');
 				alert("로그아웃되셧습니다.");
 				location.reload();
 			});
+		},
+		search() {
+			this.$store.dispatch('getWordList');
+		}
+	},
+	computed: {
+		targetWord: {
+			set (val) {
+				this.$store.commit('updateTargetWord', val);
+			},
+			get () {
+				return this.$store.state.words.targetWord;
+			}
 		}
 	}
 }
 	
 </script>
 
-<style>
+<style scoped>
 img {
 	max-width: 100%;
 }
@@ -101,15 +110,13 @@ img {
 	height: 90px;
 }
 .user-info-container {
-	text-align: right;
-	padding-top: 27px;
-	padding-right: 20px;
-	padding-left: 20px;
+	text-align: center;
+	padding-top: 50px;
 	width: 250px;
 	min-width: 250px;
 	height: 90px;
 	float: right;
-	font-size: 24px;
+	font-size: 18px;
 	color: white;
 }
 .user-info-container a {

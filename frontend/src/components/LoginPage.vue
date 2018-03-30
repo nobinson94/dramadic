@@ -77,19 +77,18 @@ export default {
 			var user_info = this.user_login;
 			this.$http.post('/api/auth/login', {email: user_info.email, password: user_info.password})
 				.then((res) => {
-					localStorage.setItem('user_id',res.data.USER_ID);
-					localStorage.setItem('user_name',res.data.USER_NAME);
-					localStorage.setItem('is_logged_in', true);
+					sessionStorage.setItem('user_id',res.data.USER_ID);
+					sessionStorage.setItem('user_name',res.data.USER_NAME);
+					sessionStorage.setItem('is_logged_in', true);
 					alert("로그인 성공");
-					location.reload();
-					
+					router.replace('/');
 			})
 		}
 	}
 }
 </script>
 
-<style>
+<style scoped>
 .login-box {
 	color: black;
 }

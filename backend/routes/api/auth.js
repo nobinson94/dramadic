@@ -14,19 +14,18 @@ router.post('/signup', function(req, res, next) {
   	let hashpass = crypto.createHash("sha512").update(user_info.password + salt).digest("hex").toString();
 	
 	let users = {
-    'id' : mysql.escape(user_info.id.trim()),
+    'email' : mysql.escape(user_info.email.trim()),
     'pwd' : mysql.escape(hashpass),
     'salt' : mysql.escape(salt),
     'name' : mysql.escape(user_info.name.trim()),
     'address' : mysql.escape(user_info.address),
-    'email' : mysql.escape(user_info.email)
   	};
 
 	db.getConnection()
 	.then((connection) => {
 		let sql = `
-			INSERT INTO user_info (user_id, user_pw, salt, user_name, user_address, user_email, create_date, recent_login)
-			VALUES (${users['id']}, ${users['pwd']}, ${users['salt']}, ${users['name']}, ${users['address']},${users['email']}, now(), now() )
+			INSERT INTO USER_INFO_TB (USER_ID, USER_PW, SALT, USER_NAME, USER_ADDRESS, CREATE_DT, RECENT_LOGIN_DT)
+			VALUES (${users['email']}, ${users['pwd']}, ${users['salt']}, ${users['name']}, ${users['address']}, now(), now() )
 		`;
 		
 		return connection.query(sql, (error, results, fields) => {
@@ -40,15 +39,16 @@ router.post('/signup', function(req, res, next) {
 router.post('/checkduplicate', function(req, res, next) {
 	
 	let post_data = req.body;
-	let id = post_data['id'];
+	let email = post_data['id'];
 	
 	db.getConnection()
 	.then((connection) => {
 		let sql = `
 			SELECT *
-			FROM user_info
-			WHERE user_id = '${id}'
+			FROM USER_INFO_TB
+			WHERE USER_ID = '${email}'
 		`
+		console.log(sql);
 		return connection.query(sql);
 	})
 	.then((sql_result) => {
@@ -78,7 +78,7 @@ router.post('/login', function(req, res, next) {
 router.post('/logout', function(req, res, next) {
 	req.logOut();
   	req.session.destroy(function (err) {
-    res.send("0");
+    	res.send("0");
   });
 })
 

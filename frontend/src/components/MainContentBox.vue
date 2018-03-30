@@ -10,7 +10,7 @@
 	</div>
 </template>
 
-<style>
+<style scoped>
 .main-content {
 	background-color: white;
 }

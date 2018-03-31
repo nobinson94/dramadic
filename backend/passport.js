@@ -23,7 +23,6 @@ exports.setup = function (passport) {
   		let user_email	= mysql.escape(email);
       let user_pw = mysql.escape(password);
   		let conn;
-
   		db.getConnection()
   		.then((connection) => {
   			conn = connection;
@@ -33,10 +32,10 @@ exports.setup = function (passport) {
   				FROM USER_INFO_TB
   				WHERE USER_ID = ${user_email}
   			`;
-
   			return conn.query(sql);
   		})
   		.then((sql_result) => {
+
   			if(sql_result.length > 0) {
   				let pw = sql_result[0]['USER_PW'];
   				let salt = sql_result[0]['SALT'];
@@ -44,21 +43,22 @@ exports.setup = function (passport) {
   				var userHashPass = crypto.createHash("sha512").update(password + salt).digest("hex").toString();
          
   				if(userHashPass === pw) {
-  					let session = {
-                	'USER_ID' : sql_result[0]['USER_ID'],
-                	'USER_NAME' : sql_result[0]['USER_NAME'],
-                	};
+  					let user = {
+              'USER_ID' : sql_result[0]['USER_ID'],
+            	'USER_NAME' : sql_result[0]['USER_NAME'],
+            };
 
-              		conn.query(`UPDATE USER_INFO_TB SET RECENT_LOGIN_DT = now() WHERE USER_ID = '${sql_result[0]['USER_ID']}'`);
-              		db.releaseConnection(conn);
-             		return done(null, session);
+            conn.query(`UPDATE USER_INFO_TB SET RECENT_LOGIN_DT = now() WHERE USER_ID = '${sql_result[0]['USER_ID']}'`);
+            console.log("성공적 로그인");
+            db.releaseConnection(conn);
+            return done(null, user);
   				} else {
-  					db.releaseConnection(conn);
-  					return done(null, false, {message: 'fail to login'});
+            db.releaseConnection(conn);
+  					return done(null, false, '1');
   				}
   			} else {
-  				db.releaseConnection(conn);
-  				return done(null, false, {message: 'fail to login'});
+          db.releaseConnection(conn);
+  				return done(null, false, '2');
   			}
   		})
   	}

@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<div class="row" style="height: 20px;"></div>
-		<template v-if="!logInState">
+		<template v-if="!isLoggedIn">
 			<div class="row">
 				<div class="col-md-3"></div>
 				<div class="col-md-6">
@@ -11,17 +11,17 @@
 			<div class="row">
 				<div class="col-md-3"></div>
 				<div class="col-md-6 login-box">
-					<form class="form-horizontal">
+					<form class="form-horizontal" @submit.prevent="login({ email, password })">
 						<div class="form-group">
-							<label for="user_email" class="col-md-12 control-label"><strong>아이디</strong></label>
+							<label for="email" class="col-md-12 control-label"><strong>아이디</strong></label>
 							<div class="col-md-12">
-								<input type="text" class="form-control" v-model="user_login.email" placeholder="Email">
+								<input type="text" class="form-control" v-model="email" name="email" placeholder="Email">
 		    				</div>
 		  				</div>
 		  				<div class="form-group">
-		    				<label for="user_password" class="col-md-12 control-label"><strong>비밀번호</strong></label>
+		    				<label for="password" class="col-md-12 control-label"><strong>비밀번호</strong></label>
 		    				<div class="col-md-12">
-		      					<input type="password" class="form-control" v-model="user_login.password" placeholder="Password">
+		      					<input type="password" class="form-control" v-model="password" name="password" placeholder="Password">
 		    				</div>
 		  				</div>
 						<div class="form-group">
@@ -33,7 +33,7 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-2 col-md-12">
-						      	<button v-on:click="loginSubmit" class="btn btn-dramadic btn-block">로그인</button>
+						      	<button class="btn btn-dramadic btn-block">로그인</button>
 						      	<br>
 						      	<p class="text-center">아직 계정이 없으신가요?</p>
 						      	<a href="/#/signup" class="btn btn-dramadic btn-block">가입하기</a>
@@ -55,34 +55,19 @@
 export default {
 	data: function() {
 		return {
-			user_login: {
-				email: '',
-				password: ''
-			}
+			email: '',
+			password: ''
 		}
 	},
 	computed: {
-		logInState() {
-			return this.$store.getters.getLogInState;
-		},
-		username() {
-			return this.$store.getters.getName;
-		},
-		userid() {
-			return this.$store.getters.getId;
+		isLoggedIn() {
+			return this.$store.getters.isLoggedIn;
 		}
 	},
 	methods: {
-		loginSubmit() {
-			var user_info = this.user_login;
-			this.$http.post('/api/auth/login', {email: user_info.email, password: user_info.password})
-				.then((res) => {
-					sessionStorage.setItem('user_id',res.data.USER_ID);
-					sessionStorage.setItem('user_name',res.data.USER_NAME);
-					sessionStorage.setItem('is_logged_in', true);
-					alert("로그인 성공");
-					router.replace('/');
-			})
+		login() {
+			this.$store.dispatch("login", {email: this.email, password: this.password});
+			this.$router.reload();
 		}
 	}
 }

@@ -49,7 +49,7 @@
 							<input type="text" class="form-control" v-model="user.email" placeholder="email" v-on:blur="isEmail" v-on:change="makeIDFlag0">
 	    				</div>
 	    				<div class="col-md-2"><button v-on:click="checkDuplicate" class="btn btn-dramadic">중복체크</button></div>
-	    				<span class="col-md-12" v-if="checkID===1">이메일형식에 맞게 적어주세요.</span>
+	    				<span class="col-md-12" v-if="checkEmail===1">이메일형식에 맞게 적어주세요.</span>
 	    				<span class="col-md-12" v-if="noEmail===1 && user.email===''">아이디를 입력해주세요.</span>
 					</div>
 					<div class="form-group row">

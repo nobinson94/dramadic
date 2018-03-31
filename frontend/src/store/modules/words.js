@@ -11,7 +11,6 @@ const getters = {
 	video: function(state, wordid, videoid, scriptnum) {
 		return state.searchedWordList;
 	}
-
 }
 const actions = {
 	getWordList ({commit}) {

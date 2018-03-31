@@ -9,17 +9,17 @@
 					<router-link :to="{path: '/'}"><img src="../assets/img/logo.png"></router-link>
 				</div>
 				<div class="search-form-container">
-					<form class="d-flex search-form">
-						<input type="search" id="searchWord" placeholder="Search Word" v-model="targetWord">
-						<button v-on:click="search" class="search-btn">
+					<form class="d-flex search-form" @submit.prevent="searchWord">
+						<input type="search" placeholder="Search Word" v-model="targetWord">
+						<button class="search-btn">
 							<img src="../assets/img/search.png">
 						</button>
 					</form>
 				</div>
 				<div class="user-info-container">
-					<template v-if="logInState">
-						{{ username }}님 반갑습니다!
-						<a href="" v-on:click="logout" >Logout</a>
+					<template v-if="isLoggedIn">
+						 {{ username }}님 반갑습니다!
+						<a href="" @click.prevent="logout">로그아웃</a>
 					</template>
 					<template v-else>
 						<a href="/#/signup">Sign Up</a>
@@ -36,33 +36,19 @@
 import SearchPage from './SearchPage.vue'
 
 export default {
-	computed: {
-		logInState() {
-			return this.$store.getters.getLogInState;
-		},
-		username() {
-			return this.$store.getters.getName;
-		},
-		userid() {
-			return this.$store.getters.getId;
-		}
-	},
 	methods: {
 		logout() {
-			this.$http.post('/api/auth/logout')
-			.then((res) => {
-				sessionStorage.setItem('user_id', '');
-				sessionStorage.setItem('user_name', '');
-				sessionStorage.setItem('is_logged_in', 'false');
-				alert("로그아웃되셧습니다.");
-				location.reload();
-			});
+			this.$store.dispatch('logout');
+			this.$router.reload();
 		},
-		search() {
+		searchWord() {
 			this.$store.dispatch('getWordList');
 		}
 	},
 	computed: {
+		isLoggedIn() {
+			return this.$store.getters.isLoggedIn;
+    	},
 		targetWord: {
 			set (val) {
 				this.$store.commit('updateTargetWord', val);
@@ -70,6 +56,9 @@ export default {
 			get () {
 				return this.$store.state.words.targetWord;
 			}
+		},
+		username() {
+			return this.$store.state.user.name;
 		}
 	}
 }

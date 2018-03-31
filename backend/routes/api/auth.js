@@ -57,23 +57,24 @@ router.post('/checkduplicate', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
+  //  패스포트 모듈로 인증 시도
+  passport.authenticate('local', function (err, user, info) {
 
-	let post_data = req.body;
-	console.log(post_data);
-
-	passport.authenticate('local', function (err, user, info) {
-
-    var error = err || info;
-    if (error) return res.redirect('/');
-    if (!user) return res.redirect('/');
+    if (err) return res.send('error');
+    if (info == '1') return res.send('1'); //비밀번호가 틀린 에러
+    if (info == '2') return res.send('2'); // 아이디가 틀린 에러 
+    if (!user) return res.send('!user');
 
     req.logIn(user, function(err) {
       if (err) { return next(err); }
+
       return res.send(user);
     });
 
   })(req, res, next);
 });
+
+
 
 router.post('/logout', function(req, res, next) {
 	req.logOut();

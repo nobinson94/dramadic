@@ -56,7 +56,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .importance-degree {
 	padding-left: 10px;
 }

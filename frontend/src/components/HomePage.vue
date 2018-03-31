@@ -4,8 +4,8 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="user-info float-right">
-						<template v-if="logInState">
-							{{ username }}님 반갑습니다.  <a href="/#/user_info">회원정보</a> <a href="" v-on:click="logout">로그아웃</a>
+						<template v-if="isLoggedIn">
+							{{ username }}님 반갑습니다. <a href="/#/user_info">회원정보</a> <a href="" @click.prevent="logout">로그아웃</a>
 						</template>
 						<template v-else>
 							<a href="/#/signup">Sign Up</a>
@@ -26,12 +26,12 @@
 			<div class="row">
 				<div class="col-md-2"></div>
 				<div class="col-md-8 form-box">
-					<form>
+					<form @submit.prevent="searchWord">
 						<div class="form-group search-form text-center">
 							<input type="search" v-model="targetWord" class="form-control" id="wordToSearch" placeholder="Search word">
 						</div>
 						<div class="form-group search-form text-center">
-							<button class="btn btn-dramadic" v-on:click="searchWord">검색</button>
+							<button class="btn btn-dramadic">검색</button>
 						</div>
 					</form>
 				</div>
@@ -57,23 +57,13 @@ export default {
 			this.$router.push( {path:'search'} );
 		},
 		logout() {
-			this.$http.post('/api/auth/logout')
-			.then((res) => {
-				sessionStorage.setItem('user_id', '');
-				sessionStorage.setItem('user_name', '');
-				sessionStorage.setItem('is_logged_in', 'false');
-				alert("로그아웃되셧습니다.");
-				location.reload();
-			});
-		}
+			this.$store.dispatch('logout');
+		},
 	},
 	computed: {
-		logInState() {
-			return this.$store.getters.getLogInState;
-		},
-		username() {
-			return this.$store.getters.getName;
-		},
+		isLoggedIn() {
+			return this.$store.getters.isLoggedIn;
+    	},
 		targetWord: {
 			set (val) {
 				this.$store.commit('updateTargetWord', val);
@@ -81,6 +71,9 @@ export default {
 			get () {
 				return this.$store.state.words.targetWord;
 			}
+		},
+		username() {
+			return this.$store.state.user.name;
 		}
 	}
 }

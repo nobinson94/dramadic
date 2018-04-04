@@ -1,7 +1,6 @@
 const LOGIN = "LOGIN";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGOUT = "LOGOUT";
-var baseURL = this.$http.options.root;
 
 const state = {
   isLoggedIn: !!localStorage.getItem("token"),
@@ -18,6 +17,7 @@ const getters = {
 const actions = {
   login({ commit }, creds) {
 
+  var baseURL = this.$http.options.root;
     commit(LOGIN); // show spinner
     this.$http.post(`${baseURL}/api/auth/login`, {email: creds.email, password: creds.password}).
     then((res) => {
@@ -35,6 +35,8 @@ const actions = {
     })
    },
    logout({ commit }) {
+
+    var baseURL = this.$http.options.root;
     this.$http.post(`${baseURL}/api/auth/logout`)
     .then((res)=>{
       console.log(res);

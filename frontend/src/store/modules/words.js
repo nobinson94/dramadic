@@ -15,7 +15,6 @@ const getters = {
 const actions = {
 	getWordList ({commit}) {
 		var baseURL = this.$http.options.root;
-		console.log(baseURL);
 		var tempArr = [];
 		this.$http.get(`${baseURL}/api/search/words/${state.targetWord}`)
 		.then((response) => {
@@ -32,7 +31,7 @@ const actions = {
 				tempObj.pos = response.data[i].pos;
 				tempObj.senses = response.data[i].senses;
 
-				this.$http.get(`/api/search/videos/${response.data[i].name}`)
+				this.$http.get(`${baseURL}/api/search/videos/${response.data[i].name}`)
 				
 				.then((res) => {
 					var tmpVideoArr = [];
@@ -54,7 +53,6 @@ const mutations = {
 		state.targetWord = word;
 	},
 	updateSearchedWordList (state, wordlist) {
-		console.log(wordlist);
 		state.searchedWordList = wordlist;
 	}
 }

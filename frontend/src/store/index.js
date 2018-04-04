@@ -7,7 +7,7 @@ import user from './modules/user'
 
 Vue.use(Vuex);
 Vuex.Store.prototype.$http = axios
-Vuex.Store.prototype.$http.options.root = "https://35.174.44.161:3000"
+Vuex.Store.prototype.$http.options.root = "http://35.174.44.161:3000"
 
 export const store = new Vuex.Store({
   modules: {

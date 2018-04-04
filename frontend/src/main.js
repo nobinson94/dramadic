@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-Vue.prototype.$http.options.root = "https://35.174.44.161:3000"
+Vue.prototype.$http.options.root = "http://35.174.44.161:3000"
 
 /* eslint-disable no-new */
 new Vue({

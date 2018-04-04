@@ -39,7 +39,7 @@ app.use(session({
 })); // 세션 활성화
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors);
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 passportjs.setup(passport);

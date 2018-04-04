@@ -19,7 +19,6 @@ const actions = {
 		var tempArr = [];
 		this.$http.get(`${baseURL}/api/search/words/${state.targetWord}`)
 		.then((response) => {
-
 			for(var i = 0; i < response.data.length; i++) {
 				const tempObj = {
 					name: '',
@@ -33,7 +32,8 @@ const actions = {
 				tempObj.pos = response.data[i].pos;
 				tempObj.senses = response.data[i].senses;
 
-				this.$http.get(`api/search/videos/${response.data[i].name}`)
+				this.$http.get(`/api/search/videos/${response.data[i].name}`)
+				
 				.then((res) => {
 					var tmpVideoArr = [];
 					for(var j = 0; j < res.data.length; j++ ) {

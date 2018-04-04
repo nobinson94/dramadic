@@ -16,7 +16,7 @@ const getters = {
 
 const actions = {
   login({ commit }, creds) {
-    commit(LOGIN); // show spinner
+  commit(LOGIN); // show spinner
     this.$http.post('/api/auth/login', {email: creds.email, password: creds.password}).
     then((res) => {
         console.log(res.data);

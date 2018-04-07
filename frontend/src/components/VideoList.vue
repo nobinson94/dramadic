@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="container">
 			<div class="row">
-				<video-box v-for="video in videos.slice(0,numOfDisplayVideo)" :video="video" />
+				<video-box v-for="video in videos.slice(0,numOfDisplayVideo)" :video="video" :wordcode="wordcode"/>
 			</div>
 			
 			<template v-if="this.videos.length >= 5" class="row">
@@ -25,6 +25,9 @@ export default {
 	props: {
   		videos: {
   			type: Array,
+  		},
+  		wordcode: {
+  			type: Number,
   		}
   	},
 	components: {

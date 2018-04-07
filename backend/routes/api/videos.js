@@ -4,11 +4,13 @@ var mysql = require('mysql');
 var router = express.Router();
 let db = require(__DBdir);
 
-router.get('/:videoid/:scriptnum', function(req, res, next) {
+router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 	
 	let videoid = parseInt(req.params.videoid);
 	let scriptnum = parseInt(req.params.scriptnum);
-	db.getConnection()
+	
+	db
+	.getConnection()
 	.then((connection) => {
 		let sql = `
 			SELECT ST.*, VT.*
@@ -16,15 +18,15 @@ router.get('/:videoid/:scriptnum', function(req, res, next) {
 			JOIN VIDEO_TB AS VT
 			WHERE ST.Video_id = VT.INDEX and ST.Video_id = ${videoid} and ST.script_num = ${scriptnum}
 		`;
-			console.log(sql);
 			return connection.query(sql);
 		}).then((sql_result) => {
+			console.log(sql_result);
 			var data = {
-			'video_id': '',
-			'video_main_title': '',
-			'video_sub_title': '',
-			'video_path': '',
-			'video_category': '',
+			'id': '',
+			'main_title': '',
+			'sub_title': '',
+			'path': '',
+			'category': '',
 			'script_num': '',
 			'starttime':'',
 			'endtime': '',

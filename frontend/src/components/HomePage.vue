@@ -5,12 +5,14 @@
 				<div class="col-md-12">
 					<div class="user-info float-right">
 						<template v-if="isLoggedIn">
-							{{ username }}님 반갑습니다. <a href="/#/user_info">회원정보</a> <a href="" @click.prevent="logout">로그아웃</a>
+							{{ username }}님 반갑습니다. 
+							<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link> 
+							<a href="" @click.prevent="logout" class="font-dramadic">로그아웃</a>
 						</template>
 						<template v-else>
-							<a href="/#/signup">Sign Up</a>
+							<router-link :to="{path: '/signup'}" class="font-dramadic">Sign Up</router-link>
 							or
-							<a href="/#/login">Log In</a>
+							<router-link :to="{path: '/login'}" class="font-dramadic">Log In</router-link>
 						</template>
 					</div>
 				</div>
@@ -31,34 +33,36 @@
 							<input type="search" v-model="targetWord" class="form-control" id="wordToSearch" placeholder="Search word">
 						</div>
 						<div class="form-group search-form text-center">
-							<button class="btn btn-dramadic">검색</button>
+							<button class="btn btn-outline-dramadic" @click.prevent="searchWord">검색</button>
+							<button class="btn btn-outline-dramadic" @click.prevent="showModal">언어 설정</button>
 						</div>
 					</form>
 				</div>
 				<div class="col-md-2"></div>
 			</div>
-			<div class="row">
-				<div class="col-md-12 lang text-center">
-						language
-						<a href="/">한국어</a>
-						<a href="/">English</a>
-					</p>
-				</div>
-			</div>
 		</div>
+		<lang-modal-box v-if="showModalState"/>
 	</div>
 </template>
 
 <script>
+import LangModalBox from './LangModalBox.vue'
+
 export default {
+	created () {
+		this.$store.commit('updateTargetWord', '');
+	},
 	methods: {
 		searchWord() {
-			this.$store.dispatch('getWordList');
-			this.$router.push( {path:'search'} );
+			if(this.targetWord.trim() === '') alert('검색할 단어를 입력하세요');
+			else this.$router.push({path: 'search', query: {word: this.targetWord}});
 		},
 		logout() {
 			this.$store.dispatch('logout');
 		},
+		showModal() {
+			this.$store.commit('showModal');
+		}
 	},
 	computed: {
 		isLoggedIn() {
@@ -73,9 +77,15 @@ export default {
 			}
 		},
 		username() {
-			return this.$store.state.user.name;
-		}
-	}
+			return this.$store.getters.userName;
+		},
+		showModalState() {
+			return this.$store.getters.showModal;
+    	},
+	},
+	components: {
+		LangModalBox
+	},
 }
 </script>
 
@@ -84,15 +94,9 @@ body {
 	height: 100%;
 	background: #00013e;
 }
-.lang {
-  color: #FFFFFF;
-}
-a {
-	color: #FFFFFF;
-}
 a:hover, a:focus {
-	color: #FFFFFF;
 	text-decoration: underline;
+	color: #f2de7d;
 }
 .guide {
   color: #f2de7d;
@@ -102,5 +106,6 @@ a:hover, a:focus {
 .user-info {
 	padding-top: 20px;
 	color: white;
+	font-size: 20px;
 }
 </style>

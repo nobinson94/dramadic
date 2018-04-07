@@ -3,6 +3,8 @@
 		<header-bar/>
 		<main-content-box class="content-box"/>
 		<footer-box/>
+
+		<lang-modal-box v-if="showModal"/>
 	</div>
 </template>
 
@@ -10,11 +12,17 @@
 import HeaderBar from './HeaderBar.vue'
 import MainContentBox from './MainContentBox.vue'
 import FooterBox from './FooterBox.vue'
+import LangModalBox from './LangModalBox.vue'
 
 export default {
 	components: {
-			HeaderBar,MainContentBox,FooterBox
+			HeaderBar,MainContentBox,FooterBox,LangModalBox
 	},
+	computed: {
+		showModal() {
+			return this.$store.getters.showModal;
+    	},
+	}
 }
 </script>
 

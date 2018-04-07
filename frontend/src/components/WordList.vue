@@ -1,6 +1,6 @@
 <template>
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-12" >
 			<word-box v-for="word in words" v-bind:word="word" :senses="word.senses" />
 		</div>
 	</div>	

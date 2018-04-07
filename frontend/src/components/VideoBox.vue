@@ -1,6 +1,6 @@
 <template>
 	<div class="col-md-3">
-		<router-link :to="{ path:'video', params: {videoid: video.id , scriptnum:video.script_num}}" >
+		<router-link :to="{ path:'video', query: {videoid: video.id , scriptnum: video.script_num, targetcode: wordcode} }" >
 			<video class="video-box">
 				<source :src="video.path" type="video/mp4">
 			</video>
@@ -30,6 +30,9 @@ export default {
 	props: {
   		video: {
   			type: Object,
+  		},
+  		wordcode: {
+  			type: Number,
   		}
   	}, 
 	components: {

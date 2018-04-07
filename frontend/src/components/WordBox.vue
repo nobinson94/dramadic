@@ -14,7 +14,7 @@
 			<div class="col-md-12">
 				<div class="word-def">
 					{{ sense.definition[0] }}
-					
+
 				</div>
 			</div>
 			<div class="col-md-12">
@@ -23,7 +23,7 @@
 				</div>
 			</div>
 		</div>
-		<video-list v-if="word.videos" v-bind:videos="word.videos"/>
+		<video-list v-if="word.videos" v-bind:videos="word.videos" :wordcode="word.code" />
 	</div>
 </template>
 
@@ -43,6 +43,7 @@ export default {
   		},	
   	},
   	created () {
+
   	},
   	watch: {
   		

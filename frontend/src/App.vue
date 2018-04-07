@@ -17,6 +17,8 @@ export default {
 </script>
 
 <style>
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
 body {
   height: 100%;
   background-color: #00013e;
@@ -30,5 +32,18 @@ body {
 }
 .btn-dramadic {
   background-color: #f2de7d;
+}
+.btn-outline-dramadic {
+  border-color: #f2de7d;
+  color: #f2de7d;
+  background-color: rgba( 255, 255, 255, 0 );
+}
+.btn-outline-dramadic:hover {
+  color: black;
+  background-color: #f2de7d;
+}
+.font-dramadic {
+  font-family: 'Nanum Gothic', serif;
+  color: #f2de7d;
 }
 </style>

@@ -1,10 +1,8 @@
 <template>
 	<div class="header-bar container-fluid">
-		<div class="row guide-bar">
-			<div class="col-md-12 text-center">search the words through the videos</div>
-		</div>
+		
 		<div class="row search-bar">
-			<div class="col-md-12 d-flex">
+			<div class="container-fluid d-flex">
 				<div class="logo-container">
 					<router-link :to="{path: '/'}"><img src="../assets/img/logo.png"></router-link>
 				</div>
@@ -16,16 +14,22 @@
 						</button>
 					</form>
 				</div>
-				<div class="user-info-container">
-					<template v-if="isLoggedIn">
-						 {{ username }}님 반갑습니다!
-						<a href="" @click.prevent="logout">로그아웃</a>
-					</template>
-					<template v-else>
-						<a href="/#/signup">Sign Up</a>
-						or
-						<a href="/#/login">Log In</a>
-					</template>
+				<div class="info-container">
+					<div class="user-info-container">
+						<template v-if="isLoggedIn">
+							 {{ username }}님 반갑습니다!
+							<a href="" @click.prevent="logout">로그아웃</a>
+						</template>
+						<template v-else>
+							<router-link :to="{path: '/signup'}">Sign Up</router-link>
+							or
+							<router-link :to="{path: '/login'}">Log In</router-link>
+						</template>
+					</div>
+					<div class="lang-select-container">
+						<button class="btn btn-outline-light" @click="showModal">{{lang.kor}} / {{lang.for}}</button>
+						<button class="btn btn-outline-light">검색 옵션</button>
+					</div>
 				</div>	
 			</div>
 		</div>
@@ -39,10 +43,14 @@ export default {
 	methods: {
 		logout() {
 			this.$store.dispatch('logout');
-			this.$router.reload();
+			this.$router.go(this.$router.currentRoute);
 		},
 		searchWord() {
-			this.$store.dispatch('getWordList');
+			if(this.targetWord.trim() === '') alert('검색할 단어를 입력하세요');
+			else this.$router.push({path: 'search', query: {word: this.targetWord}});
+		},
+		showModal() {
+			this.$store.commit('showModal');
 		}
 	},
 	computed: {
@@ -58,7 +66,13 @@ export default {
 			}
 		},
 		username() {
-			return this.$store.state.user.name;
+			return this.$store.getters.userName;
+		},
+		lang() {
+			if(localStorage.getItem("lang")) return this.$store.getters.lang;
+			var langObj = {kor : '영어', for: 'Eng', id: '1',name: 'lang-en',active:true};
+			localStorage.setItem("lang", JSON.stringify(langObj));
+			return langObj;
 		}
 	}
 }
@@ -87,34 +101,40 @@ img {
   font-size: 20px;
   padding-top: 20px;
   height: 30px;
+  width: 800px;
+  min-width: 200px;
 }
 .search-bar {
+	padding-top: 10px;
 	height: 90px;
 }
 .logo-container {
 	padding-bottom: 5px;
-	padding-left: 20px;
-	width: 270px;
-	min-width: 270px;
-	height: 90px;
-}
-.user-info-container {
-	text-align: center;
-	padding-top: 50px;
 	width: 250px;
 	min-width: 250px;
+	height: 90px;
+}
+.info-container {
+	text-align: right;
+	padding-top: 0px;
+	width: 1000px;
+	min-width: 200px;
 	height: 90px;
 	float: right;
 	font-size: 18px;
 	color: white;
 }
-.user-info-container a {
+.info-container a {
+	font-size: 20px;
 	color: #f2de7d;
+}
+.user-info-container {
+	height: 50px;
 }
 .search-form-container {
 	padding-top: 15px;
-	width: 1000px;
-	min-width: 200px;
+	width: 600px;
+	min-width: 600px;
 	vertical-align: middle;
 	font-size: 22px;
 }

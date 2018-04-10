@@ -4,14 +4,8 @@
 		<div class="content">
 			<div class="row video-title-container">
 				<strong>{{ video.main_title }}</strong> {{ video.sub_title }}
-			</div>
-			<div class="row video-player-container">
-				{{ video.starttime }}
-				<video width="800" height="600" controls="controls">
-					<source v-bind:src="video.path" type="video/mp4">
-				</video>
-
-			</div>
+			</div>			
+			<video-player :path="video.path" :starttime="video.starttime" :endtime="video.endtime" />
 			<div class="row script-container">
 				{{ video.text }}
 			</div>			
@@ -21,8 +15,12 @@
 </template>
 
 <script>
+import VideoPlayer from './VideoPlayer.vue'
 
 export default {
+	components: {
+		VideoPlayer
+	},
 	created () {
 		var videoid = this.$route.query.videoid;
 		var scriptnum = this.$route.query.scriptnum;

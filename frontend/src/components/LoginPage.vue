@@ -43,20 +43,17 @@
 				</div>
 				<div class="col-md-3"></div>
 			</div>			
-		</template>
-		<template v-else>
-			환영합니다.
-		</template>
-		
+		</template>		
 	</div>
 </template>
 
 <script>
+
 export default {
 	data: function() {
 		return {
 			email: '',
-			password: ''
+			password: '',
 		}
 	},
 	computed: {
@@ -64,10 +61,17 @@ export default {
 			return this.$store.getters.isLoggedIn;
 		}
 	},
+	created() {
+		if(this.isLoggedIn) this.$router.push({path: 'userinfo'});
+	},
 	methods: {
 		login() {
 			this.$store.dispatch("login", {email: this.email, password: this.password});
-			this.$router.reload();
+		}
+	},
+	watch: {
+		isLoggedIn: function() {
+			this.$router.go(this.$router.currentRoute);
 		}
 	}
 }

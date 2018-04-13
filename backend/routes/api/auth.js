@@ -19,13 +19,15 @@ router.post('/signup', function(req, res, next) {
     'salt' : mysql.escape(salt),
     'name' : mysql.escape(user_info.name.trim()),
     'address' : mysql.escape(user_info.address),
+    'lang': mysql.escape(user_info.lang),
+    'phone': mysql.escape(user_info.phone),
   	};
 
 	db.getConnection()
 	.then((connection) => {
 		let sql = `
-			INSERT INTO USER_INFO_TB (USER_ID, USER_PW, SALT, USER_NAME, USER_ADDRESS, CREATE_DT, RECENT_LOGIN_DT)
-			VALUES (${users['email']}, ${users['pwd']}, ${users['salt']}, ${users['name']}, ${users['address']}, now(), now() )
+			INSERT INTO USER_INFO_TB (USER_ID, USER_PW, SALT, USER_NAME, USER_ADDRESS, CREATE_DT, RECENT_LOGIN_DT, USER_PHONE, default_lang)
+			VALUES (${users['email']}, ${users['pwd']}, ${users['salt']}, ${users['name']}, ${users['address']}, now(), now(),${users['phone']},${users['lang']} )
 		`;
 		
 		return connection.query(sql, (error, results, fields) => {

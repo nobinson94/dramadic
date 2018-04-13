@@ -1,6 +1,8 @@
 var express = require('express');
 var mysql = require('mysql');
 var fs = require('fs');
+var tmp = require('tmp');
+var shelljs = require('shelljs');
 
 var router = express.Router();
 let db = require(__DBdir);
@@ -48,5 +50,52 @@ router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 			res.send(data);
 		});
 });
+
+router.get('/path/:videopath', async function(req, res, next) {
+
+	let videopath = req.params.videopath;
+	let path = "http://d1m31uchl59ope.cloudfront.net/" + videopath;
+	let start = "00:01:00";
+	let duration = "00:00:30";
+	var videoData = {
+		filePath: path,
+		startTime: start,
+		duration: duration,
+	}
+	var video = await cutVideo(videoData);
+	const stat = fs.statSync(video.path);
+  	const fileSize = stat.size;
+  	const head = {
+      'Content-Length': fileSize,
+      'Content-Type': 'video/mp4',
+    }
+    res.writeHead(200, head);
+	const file = fs.createWriteStream(video.path);
+	file.pipe(res);
+});
+
+function cutVideo(args) {
+	let outputFile = tmp.tmpNameSync({
+		postfix: `.mp4`
+	});
+	return new Promise((resolve, reject)=>{
+		let query =
+			`ffmpeg -i ${args.filePath} -ss ${args.startTime} -t ${args.duration} ${outputFile} -y`;
+
+		let child = shelljs.exec(query, { async: true, silent: false });
+		child.on('exit' ,(code, signal) => {
+			if(code===0){
+				resolve({
+					path: outputFile,
+				});
+			} else {
+				reject({
+					err: 'error'
+				});
+			}
+		})
+	
+	})
+}
 
 module.exports = router;

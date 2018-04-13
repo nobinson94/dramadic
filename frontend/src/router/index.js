@@ -7,6 +7,7 @@ import LoginPage from '@/components/LoginPage'
 import SignupPage from '@/components/SignUpPage'
 import WordList from '@/components/WordList'
 import VideoPage from '@/components/VideoPage'
+import UserInfoPage from '@/components/UserInfoPage'
 
 Vue.use(Router)
 
@@ -41,6 +42,10 @@ const routes = [
           path: 'signup', 
           component: SignupPage
         },
+        {
+          path: 'userinfo',
+          component: UserInfoPage
+        }
       ]
     },    
 ]

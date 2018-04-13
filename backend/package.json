@@ -12,6 +12,7 @@
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-session": "^1.15.6",
+    "ffmpeg": "0.0.4",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.7",
     "morgan": "~1.9.0",
@@ -21,7 +22,10 @@
     "promise-mysql": "^3.2.1",
     "request": "^2.85.0",
     "serve-favicon": "~2.4.5",
+    "shelljs": "^0.8.1",
+    "tmp": "0.0.33",
     "urlencode": "^1.1.0",
+    "video-stitch": "^1.4.0",
     "xml2js": "^0.4.19"
   }
 }

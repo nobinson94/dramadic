@@ -18,6 +18,7 @@
 					<div class="user-info-container">
 						<template v-if="isLoggedIn">
 							 {{ username }}님 반갑습니다!
+							<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link>
 							<a href="" @click.prevent="logout">로그아웃</a>
 						</template>
 						<template v-else>
@@ -43,7 +44,6 @@ export default {
 	methods: {
 		logout() {
 			this.$store.dispatch('logout');
-			this.$router.go(this.$router.currentRoute);
 		},
 		searchWord() {
 			if(this.targetWord.trim() === '') alert('검색할 단어를 입력하세요');
@@ -73,6 +73,11 @@ export default {
 			var langObj = {kor : '영어', for: 'Eng', id: '1',name: 'lang-en',active:true};
 			localStorage.setItem("lang", JSON.stringify(langObj));
 			return langObj;
+		}
+	},
+	watch: {
+		isLoggedIn: function() {
+			this.$router.go(this.$router.currentRoute);
 		}
 	}
 }

@@ -35,22 +35,6 @@
 </template>
 <script>
 export default {
-  data() {
-    return {
-      langs: [
-        {id: '1', name: 'lang-en', kor: '영어', for: 'English', active: false},
-        {id: '2', name: 'lang-ja', kor: '일본어', for: '日本語', active: false},
-        {id: '3', name: 'lang-fr', kor: '프랑스어', for: 'le français', active: false},
-        {id: '4', name: 'lang-es', kor: '스페인어', for: 'Español' , active: false},
-        {id: '5', name: 'lang-ar', kor: '아랍어', for: 'العربية', active: false },
-        {id: '6', name: 'lang-mn', kor: '몽골어', for: 'Монгол хэл', active: false},
-        {id: '7', name: 'lang-vi', kor: '베트남어', for: 'Tiếng Việt', active: false},
-        {id: '8', name: 'lang-lo', kor: '타이어', for: 'ภาษาไทย', active: false},
-        {id: '9', name: 'lang-id', kor: '인도네시아어', for: 'Bahasa indonesia', active: false},
-        {id: '10', name: 'lang-ru', kor: '러시아어', for: 'русский', active: false},
-      ]
-    }
-  },
 	created() {
     var currentLang = this.$store.getters.lang.id;
     for(let lang of this.langs) {
@@ -62,7 +46,9 @@ export default {
 
   },
   computed: {
-   
+    langs() {
+      return this.$store.getters.langlist;
+    }
   },
 	methods: {
 		hideModal() {

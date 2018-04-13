@@ -2,18 +2,16 @@
 	<div>
 		<div id="my-video">
 		</div>
-		<!--<div>
-			<video id="clip" controls preload=auto width=640 height=264 data-setup="{}">
-    			<source src="http://d1m31uchl59ope.cloudfront.net/sebasi_e244.mp4" type='video/mp4'/>        
-			</video>
-		</div>-->
+		<video id="videoPlayer" controls>
+  			<source src="http://localhost:3000/api/videos/path/sebasi_e244.mp4" type="video/mp4">
+		</video>
 	</div>
 </template>
 
 
-<script src="https://content.jwplatform.com/libraries/WcNjC1Qj.js"></script>
-<script>jwplayer.key="/r/SfRDbt/9tP6f5ck8fXS0geEtmLdMuy8fc2ovsg8k=";</script>
-<script>	
+<script>
+
+import jwPlayer from "../lib/jwplayer/jwplayer.js";
 export default {
 	props: {
   		path: {
@@ -27,28 +25,34 @@ export default {
   		}
   	},
   	created () {
-  		this.setupPlayer();
+  		const script = document.createElement('script');
+  		script.src = "https://content.jwplatform.com/libraries/WcNjC1Qj.js"
+		document.head.appendChild(script);
+		jwplayer.key="/r/SfRDbt/9tP6f5ck8fXS0geEtmLdMuy8fc2ovsg8k=";
 	},
-	watch: {
-   
-  	},
-	computed : {
+	computed: {
 		
 	},
 	methods: {
-		setupPlayer: function (){
-    		var filename = this.path;
-    		jwplayer("my-video")
-    		.setup({
-			 'provider': 'rtmp',
-			 'streamer': 'rtmp://s22mzdgskx7nd1.cloudfront.net/cfx/st/',
-			 'file': 'sebasi_e244.mp4',
+		cutVideo() {
+
+		}
+	},
+	mounted () {
+		var file = this.path;
+		this.$nextTick(function () {
+			jwplayer("my-video").setup({
+			 //'provider': 'rtmp',
+			 //'streamer': 'rtmp://s22mzdgskx7nd1.cloudfront.net/cfx/st/',
+			 //'file': 'http://dramadicbucket.s3.amazonaws.com/sebasi_e244.mp4',
+			 'file': 'localhost:3000/api/videos/path/sebasi_e244.mp4',
 			 'width': '720',
 			 'height': '480',
 			 'primary': 'flash',
-			 'autostart': 'true'
+			 'autostart': 'true',
 			});
-    	}	
+    	})
 	}
+		
 }
 </script>

@@ -80,6 +80,30 @@
 							<input type="text" class="form-control" v-model="user.address" placeholder="address">
 	    				</div>
 					</div>
+					<div class="form-group row">
+						<label for="phone" class="col-md-12 control-label"><strong>전화번호</strong></label>
+						<div class="col-md-12">
+							<input type="text" class="form-control" v-model="user.phone" placeholder="010-0000-0000">
+	    				</div>
+					</div>
+					<div class="form-group row">
+						<label for="phone" class="col-md-12 control-label"><strong>기본언어</strong></label>
+						<div class="col-md-12">
+						 	<select class="custom-select" v-model="user.lang">
+					        	<option selected>Choose...</option>
+						        <option value="0">영어 / English</option>
+						        <option value="1">일본어 / 日本語</option>
+						        <option value="2">프랑스어 / le français</option>
+						        <option value="3">스페인어 / Español</option>
+						        <option value="4">아랍어 / العربية</option>
+						        <option value="5">몽골어 / Монгол хэл</option>
+						        <option value="6">베트남어 / Tiếng Việt</option>
+						        <option value="7">타이어 / ภาษาไทย</option>
+						        <option value="8">인도네시아어 / Bahasa indonesia</option>
+						        <option value="9">러시아어 / русский</option>
+						    </select>
+						</div>
+					</div>
 
 					<div class="row">
 						<div class="col-md-3"></div>
@@ -106,6 +130,8 @@ export default {
 				passwordcheck: '',
 				name: '',
 				address: '',
+				phone: '',
+				lang: '',
 			},
 			emailCheck: 0,
 			noName: 0,

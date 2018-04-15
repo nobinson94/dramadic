@@ -1,6 +1,5 @@
 <template>
 	<div class="container content-box">
-
 		<word-list v-if="words" v-bind:words="words"/>
 		<div v-if="!words">검색 결과가 없습니다.</div>
 	</div>
@@ -12,11 +11,6 @@ import ReferedWordList from './ReferedWordList.vue'
 import WordList from './WordList.vue'
 
 export default {
-	data () {
-		return {
-			
-		}
-	},
 	created () {
 		var targetWord = this.$route.query.word
 		this.$store.commit('updateTargetWord', targetWord);

@@ -3,9 +3,7 @@ const state = {
 		id: '',
 		scriptnum: ''
 	},
-	wordcode: Number,
 	video: Object,
-	word: Object,
 	lang: JSON.parse(localStorage.getItem("lang")),
 }
 
@@ -13,9 +11,6 @@ const getters = {
 	video : function(state) {
 		return state.video
 	},
-	word : function(state) {
-		return state.word
-	}
 }
 const actions = {
 	getVideo ({commit}) {

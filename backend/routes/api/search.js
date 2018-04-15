@@ -1,16 +1,13 @@
-var express = require('express');
-var mysql = require('mysql');
-var xml2js = require('xml2js');
-var request = require('request');
-var urlencode = require('urlencode');
-
-var router = express.Router();
+const express = require('express');
+const mysql = require('mysql');
+const krdict = require('../../lib/krdict_api');
+const router = express.Router();
 let db = require(__DBdir);
 
-router.get('/videos/:word', function(req,res,next) {
+router.get('/videolist/:targetword', function(req,res,next) {
 	let conn;
-	let word = req.params.word;
-	var data = new Array;
+	let word = req.params.targetword;
+	var data = [];
 
 	db.getConnection()
 	.then((connection) => {
@@ -52,58 +49,23 @@ router.get('/videos/:word', function(req,res,next) {
 		db.releaseConnection(conn);
 		res.send(data);
 	});
-	
 });
 
-let searchWord = (word, lang) => new Promise((resolve) => {
-	var parser = new xml2js.Parser();
-	var data = [];
-	var url = "https://krdict.korean.go.kr/api/search?certkey_no=239&key=D393C1F077CF383BB7CDE21F07BE0ADD&type_search=search&method=WORD_INFO&part=word&";
-	url += "q=";
-	url += urlencode(word);
-	url += "&sort=popular&translated=y&";
-	url += "trans_lang=";
-	url += lang;
 
-	console.log(url);
-	request(url, function(error, response, body) {
-       	parser.parseString(body, function(err, result){
-       		if(result.channel.total[0] !== '0') {
-       			var worditems = result.channel.item;
-	       		for(let item of worditems) {
-	       			data.push({
-	       				code: item.target_code[0], //target_code
-		       			name: item.word[0],
-		       			index: item.sup_no[0], // 동형어 넘버 
-		       			pos: item.pos[0], // 품사 
-		       			senses: item.sense
-		       		});
-	       		}
-				resolve(data); 		
-       		}
-       	});
-    });
-});
+router.get('/wordlist/:targetwords', async function (req, res, next) {
 
-async function searchLoop(wordSplit, lang) {
-	var dataArr = [];
-	for(let splitted of wordSplit) {
-		let data = await searchWord(splitted, lang);
-		dataArr = dataArr.concat(data);
+	let lang = req.query.lang;
+	let words = req.params.targetwords;
+
+	let searchData = await krdict.requestBySearch(words);
+	let resultData = [];
+	for(let data of searchData) {
+		resultData.push(await krdict.requestByView(data.code, lang));
 	}
-	return dataArr;
-}
+	console.log(resultData);
+	res.send(resultData);
+});
 
-router.get('/words/:word/lang/:langnum', async function (req, res, next) {	
-	let lang = req.params.langnum;
-	let word = req.params.word;
-	word.trim();
-	var wordSplit = word.split(' ');
-	var result = await searchLoop(wordSplit, lang);
-	
-	console.log(result);
-	res.send(result);
-})
 
 
 module.exports = router;

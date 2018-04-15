@@ -1,56 +1,67 @@
 const state = {
-	targetWord: '',
+	targetWord: '', //찾고자 하는 단어 string (1개 이상의 단어)
 	lang: JSON.parse(localStorage.getItem("lang")),
-	referedWords: [],
+	referedWordList: [],
 	searchedWordList: [],
+	focusWord: null,
 }
 
 const getters = {
 	wordList: function(state) {
 		return state.searchedWordList;
 	},
+	refWordList: function(state) {
+		return state.referedWordList;
+	},
 	lang: function(state) {
 		return state.lang;
+	},
+	focusWord: function(state) {
+		return state.focusWord;
 	}
+
 }
 const actions = {
 	getWordList ({commit}) {
-		var baseURL = this.$http.options.root;
-		var tempArr = [];
-		this.$http.get(`${baseURL}/api/search/words/${state.targetWord}/lang/${state.lang.id}`)
+		const baseURL = this.$http.options.root;
+		let tempArr = [];
+		this.$http.get(`${baseURL}/api/search/wordlist/${state.targetWord}?lang=`+state.lang.id)
 		.then((response) => {
-			console.log(response.data);
-			for(var i = 0; i < response.data.length; i++) {
-				const tempObj = {
-					name: '',
-					index: '',
-					pos: '',
-					code: '',
-					senses: [],
-					videos: []
-				};
-				tempObj.name = response.data[i].name;
-				tempObj.index = response.data[i].index;
-				tempObj.code = parseInt(response.data[i].code);
-				tempObj.pos = response.data[i].pos;
-				tempObj.senses = response.data[i].senses;
-
-
-				this.$http.get(`${baseURL}/api/search/videos/${response.data[i].name}`)
+			//console.log(response.data);
+			tempArr = response.data;
+			return tempArr;
+		})
+		.then(() => {
+			for(let temp of tempArr) {
+				//console.log(temp);
+				this.$http.get(`${baseURL}/api/search/videolist/${temp.name}`)
 				.then((res) => {
-					var tmpVideoArr = [];
-					for(var j = 0; j < res.data.length; j++ ) {
-						tmpVideoArr[j] = res.data[j];
-					}
-					tempObj.videos = tmpVideoArr;
-					tempArr.push(tempObj);
+					console.log(res.data);
+					temp.videoList = res.data;
 				})
-			}		
-		}).then(function() {
+			}
+			return tempArr;
+		})
+		.then(() => {
+			console.log(tempArr);
 			commit('updateSearchedWordList', tempArr);
 		})
+	},
+	getFocusWord({commit}, creds) {
+		const baseURL = this.$http.options.root;
+		let tempObj = null;
+		this.$http.get(`${baseURL}/api/words?lang=${creds.lang}&code=${creds.code}`)
+		.then((response) => {
+			tempObj = response.data;
+			this.$http.get(`${baseURL}/api/search/videolist/${tempObj.name}`)
+			.then((res) => {
+				tempObj.videoArr = res.data;
+			})
+		})
+		.then(() => {
+			commit('updateFocusWord', tempObj);
+		})
 	}
-
 }
 const mutations = {
 	updateTargetWord (state, word) {
@@ -61,6 +72,9 @@ const mutations = {
 	},
 	updateLang (state, lang) {
 		state.lang = lang;
+	},
+	updateFocusWord (state, wordInfo) {
+		state.focusWord = wordInfo;
 	}
 }
 

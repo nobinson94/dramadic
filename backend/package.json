@@ -21,6 +21,7 @@
     "passport-local": "^1.0.0",
     "promise-mysql": "^3.2.1",
     "request": "^2.85.0",
+    "request-promise": "^4.2.2",
     "serve-favicon": "~2.4.5",
     "shelljs": "^0.8.1",
     "tmp": "0.0.33",

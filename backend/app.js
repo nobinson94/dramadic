@@ -11,6 +11,7 @@ var session = require('express-session');
 var cors = require('cors');
 
 var index = require('./routes');
+var modules = require('./modules');
 
 var passport = require('passport');
 var passportjs = require('./passport.js');
@@ -45,6 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 passportjs.setup(passport);
 
 app.use('/', index);
+app.use('/module', modules);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

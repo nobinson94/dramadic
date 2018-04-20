@@ -104,6 +104,7 @@ exports.requestByView = function (t_code, lang) {
 		qs: viewquery
 	}
 	let resultdata = {
+		code: t_code,
 		name: '',// 표제어
 		sup_no: '', // 동형어 넘버
 		pos: '', //품사
@@ -135,9 +136,12 @@ exports.requestByView = function (t_code, lang) {
 			       		let trans = null; 
 			       		if(obj.hasOwnProperty('rel_info')) {
 			       			rel_info = obj.rel_info.map(function (subobj) {
+			       				cd = subobj.hasOwnProperty('link_target_code')
+			       				? subobj.link_target_code[0]
+			       				: ''
 			       				return {
 			       					word: subobj.word[0],
-			       					code: subobj.link_target_code[0]
+			       					code: cd
 			       				}
 			       			})
 			       		} 
@@ -179,12 +183,16 @@ exports.requestByView = function (t_code, lang) {
 			       	// 파생어
 			       	if(item.hasOwnProperty('der_info')){
 			       		resultdata.der_arr = item.der_info.map(function (obj) {
+			       			cd = obj.hasOwnProperty('link_target_code')
+			       				? obj.link_target_code[0]
+			       				: ''
 			       			return {
 			       				word: obj.word[0],
-			       				code: obj.link_target_code[0]
+			       				code: cd
 			       			}
 			       		})
 			       	}
+			       	resultdata.videoList = [];
 			       	resultdata.key = index;
 			       	index++; 
 			 	} else {

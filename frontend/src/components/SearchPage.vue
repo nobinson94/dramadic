@@ -1,7 +1,7 @@
 <template>
 	<div class="container content-box">
+		<load-page v-if="loading" />
 		<word-list v-if="words" v-bind:words="words"/>
-		<div v-if="!words">검색 결과가 없습니다.</div>
 	</div>
 </template>
 
@@ -9,22 +9,30 @@
 <script>
 import ReferedWordList from './ReferedWordList.vue'
 import WordList from './WordList.vue'
+import LoadPage from './LoadPage.vue'
 
 export default {
+	data () {
+	    return {
+	      loading: false,
+	    }
+  	},
 	created () {
-		var targetWord = this.$route.query.word
-		this.$store.commit('updateTargetWord', targetWord);
-		this.$store.dispatch('getWordList');
+		this.fetchData();
 	},
 	watch: {
-    	$route : function() {
-    		var targetWord = this.$route.query.word
-			this.$store.commit('updateTargetWord', targetWord);
-			this.$store.dispatch('getWordList');
-    	}
+    	'$route' : 'fetchData'
   	},
   	methods: {
-  		
+  		fetchData: function() {
+  			this.$store.commit('updateSearchedWordList', null);
+  			this.loading = true;
+
+  			let targetWord = this.$route.query.word
+			this.$store.commit('updateTargetWord', targetWord);
+			this.$store.dispatch('getWordList');
+			this.loading = false;
+  		}
   	},
   	computed: {
   		words() {
@@ -32,7 +40,7 @@ export default {
   		}
   	},
 	components: {
-			ReferedWordList, WordList
+			ReferedWordList, WordList, LoadPage
 	}
 }
 </script>	

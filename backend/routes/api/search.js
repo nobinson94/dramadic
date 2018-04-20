@@ -6,8 +6,9 @@ let db = require(__DBdir);
 
 router.get('/videolist/:targetword', function(req,res,next) {
 	let conn;
-	let word = req.params.targetword;
-	var data = [];
+	let word = "("+req.params.targetword+")";
+	let num = req.query.num;
+	let data = [];
 
 	db.getConnection()
 	.then((connection) => {
@@ -17,7 +18,7 @@ router.get('/videolist/:targetword', function(req,res,next) {
 		SELECT ST.*, VT.*
 		FROM SCRIPT_TB AS ST
 		JOIN VIDEO_TB AS VT
-		WHERE ST.video_id = VT.INDEX and ST.text LIKE '%${word}%'
+		WHERE ST.video_id = VT.INDEX and ST.keywords LIKE '%${word}%'
 		`;
 
 		return conn.query(sql);
@@ -25,27 +26,22 @@ router.get('/videolist/:targetword', function(req,res,next) {
 		var result = sql_result;
 		for(var i = 0; i < result.length; i++) {
 			var item = {
-			'id': '',
+			'video_id': '',
 			'main_title': '',
 			'sub_title': '',
 			'path': '',
-			'category': '',
 			'script_num': '',
-			'start_t':'',
-			'end_t': '',
 			'text': '',
 			}
-			item.id = result[i].Video_id;
+			item.video_id = result[i].Video_id;
 			item.main_title = result[i].VIDEO_Main_Title;
 			item.sub_title = result[i].VIDEO_Sub_Title;
-			item.path = result[i].VIDEO_Path;
-			item.category = result[i].VIDEO_Category;
+			item.path = 'http://dramadicbucket.s3.amazonaws.com/' + result[i].VIDEO_Path + '_' + result[i].sentence_id +'.mp4';;
 			item.script_num = result[i].script_num;
-			item.start_t = result[i].Start_time;
-			item.end_t = result[i].End_time;
 			item.text = result[i].text;
 			data.push(item);
 		}
+
 		db.releaseConnection(conn);
 		res.send(data);
 	});
@@ -58,11 +54,11 @@ router.get('/wordlist/:targetwords', async function (req, res, next) {
 	let words = req.params.targetwords;
 
 	let searchData = await krdict.requestBySearch(words);
+
 	let resultData = [];
 	for(let data of searchData) {
 		resultData.push(await krdict.requestByView(data.code, lang));
 	}
-	console.log(resultData);
 	res.send(resultData);
 });
 

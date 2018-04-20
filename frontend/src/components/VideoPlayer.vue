@@ -2,9 +2,6 @@
 	<div>
 		<div id="my-video">
 		</div>
-		<video id="videoPlayer" controls>
-  			<source src="http://localhost:3000/api/videos/path/sebasi_e244.mp4" type="video/mp4">
-		</video>
 	</div>
 </template>
 
@@ -17,12 +14,6 @@ export default {
   		path: {
   			type: String,
   		},
-  		starttime: {
-  			type: String,
-  		},
-  		endtime: {
-  			type: String,
-  		}
   	},
   	created () {
   		const script = document.createElement('script');
@@ -44,10 +35,9 @@ export default {
 			jwplayer("my-video").setup({
 			 //'provider': 'rtmp',
 			 //'streamer': 'rtmp://s22mzdgskx7nd1.cloudfront.net/cfx/st/',
-			 //'file': 'http://dramadicbucket.s3.amazonaws.com/sebasi_e244.mp4',
-			 'file': 'localhost:3000/api/videos/path/sebasi_e244.mp4',
-			 'width': '720',
-			 'height': '480',
+			 'file': 'http://dramadicbucket.s3.amazonaws.com/'+file,
+			 'width': '600',
+			 'height': '400',
 			 'primary': 'flash',
 			 'autostart': 'true',
 			});

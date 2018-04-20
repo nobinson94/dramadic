@@ -158,11 +158,11 @@ export default {
 			else return 2;
 		},
 		checkEmail: function() {
-			var user_info = this.user;
-			var email = user_info.email;
-
+			let user_info = this.user;
+			let email = user_info.email;
+			let emailPattern = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
 			if (email === '') return 0;
-			else if (email.length <= 5) return 1; //이메일 형식에 맞지 않습니다.
+			else if (!email.match(emailPattern)) return 1; //이메일 형식에 맞지 않습니다.
 			else return 2;
 		},
 		checkName: function() {

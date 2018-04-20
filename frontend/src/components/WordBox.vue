@@ -2,10 +2,11 @@
 	<div class="word-box">
 		<div class="row">
 			<div class="col-md-12 d-flex">
-				<h3> {{ word.name }} </h3>
+				<h4> {{ word.name }} </h4>
 				<div class="sup-no" v-if="word.sup_no!==0">
 					{{ word.sup_no }}
 				</div>
+				<h4><span v-if="word.org_word">({{ word.org_word.lang }})</span></h4>
 				<div v-if="word.pron"> [{{ word.pron }}]</div>
 				<div class="importance-degree d-flex">
 					<div v-for="n in word.grade">
@@ -47,8 +48,8 @@ export default {
 	padding-left: 10px;
 }
 .star-img {
-	height: 16px;
-	width: 18px;
+	height: 10px;
+	width: 12px;
 	padding-right: 2px;
 }
 .word-def {

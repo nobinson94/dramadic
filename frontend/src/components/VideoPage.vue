@@ -1,14 +1,21 @@
 <template>
 	<div class="container">
-
-		<div class="content">
+		<div class="video-content">		
+			<video-player :path="video.path"/>
 			<div class="row video-title-container">
-				<strong>{{ video.main_title }}</strong> {{ video.sub_title }}
-			</div>			
-			<video-player :path="video.path" :starttime="video.starttime" :endtime="video.endtime" />
+				<div class="col-md-12">
+					<strong>{{ video.main_title }}</strong> {{ video.sub_title }}
+				</div>
+			</div>	
 			<div class="row script-container">
 				{{ video.text }}
 			</div>			
+		</div>
+		<div class="word-content">
+			<h4> {{ word.name }} </h4>
+			<div class="sup-no" v-if="word.sup_no!==0">
+				{{ word.sup_no }}
+			</div>
 		</div>
 
 	</div>
@@ -22,38 +29,30 @@ export default {
 		VideoPlayer
 	},
 	created () {
-		var videoid = this.$route.query.videoid;
-		var scriptnum = this.$route.query.scriptnum;
-		var targetWordCode = this.$route.query.targetcode;
-
-		var videoinfo = { videoid: videoid, scriptnum: scriptnum};
-		this.$store.commit('updateVideoInfo', videoinfo);
-		this.$store.commit('updateWordCode', targetWordCode);
-		this.$store.dispatch('getVideo');
-		this.$store.dispatch('getWord');
+		this.fetchData();
 	},
 	watch: {
-    	$route : function() {
-    		var videoid = this.$route.query.videoid;
-			var scriptnum = this.$route.query.scriptnum;
-			var targetWordCode = this.$route.query.targetcode;
-
-			var videoinfo = { videoid: videoid, scriptnum: scriptnum};
-			this.$store.commit('updateVideo', videoinfo);
-			this.$store.commit('updateWordCode', targetcode);
-			this.$store.dispatch('getVideo');
-			this.$store.dispatch('getWord');
-    	}
-  	},
+    	'$route': 'fetchData'
+	},
 	computed : {
 		video() {
 			return this.$store.getters.video
 		},
 		word() {
-			return this.$store.getters.word
+			return this.$store.getters.focusWord
 		}
 	},
 	methods: {
+		fetchData : function() {
+			var videoid = this.$route.query.videoid;
+			var scriptnum = this.$route.query.scriptnum;
+			var targetWordCode = this.$route.query.targetcode;
+			var videoinfo = { videoid: videoid, scriptnum: scriptnum};
+			this.$store.commit('updateVideoInfo', videoinfo);
+			this.$store.commit('updateFocusWordCode', targetWordCode);
+			this.$store.dispatch('getVideo');
+			this.$store.dispatch('getFocusWord');
+		}
 		
 	}
 

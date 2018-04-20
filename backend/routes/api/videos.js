@@ -1,101 +1,101 @@
 var express = require('express');
 var mysql = require('mysql');
 var fs = require('fs');
-var tmp = require('tmp');
-var shelljs = require('shelljs');
+var request = require('request');
 
 var router = express.Router();
 let db = require(__DBdir);
+let conn;
 
 router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 	
 	let videoid = parseInt(req.params.videoid);
 	let scriptnum = parseInt(req.params.scriptnum);
-	
+	let data = null;
+	let lastSentence;
 	db
 	.getConnection()
 	.then((connection) => {
-		let sql = `
-			SELECT ST.*, VT.*
-			FROM SCRIPT_TB AS ST
-			JOIN VIDEO_TB AS VT
-			WHERE ST.Video_id = VT.INDEX and ST.Video_id = ${videoid} and ST.script_num = ${scriptnum}
-		`;
-			return connection.query(sql);
+			conn = connection;
+			let sql = `
+				SELECT MAX(sentence_id)
+				FROM SCRIPT_TB
+				WHERE Video_id = ${videoid}
+			`;
+			return conn.query(sql);
 		}).then((sql_result) => {
 			console.log(sql_result);
-			var data = {
-			'id': '',
-			'main_title': '',
-			'sub_title': '',
-			'path': '',
-			'category': '',
-			'script_num': '',
-			'starttime':'',
-			'endtime': '',
-			'text': '',
-			}
+			let result = sql_result[0]; 
+			lastSentence = result['MAX(sentence_id)'];
+			let sql = `
+				SELECT ST.*, VT.*
+				FROM SCRIPT_TB AS ST
+				JOIN VIDEO_TB AS VT
+				WHERE ST.Video_id = VT.INDEX and ST.Video_id = ${videoid} and ST.script_num = ${scriptnum}
+			`;
+			return conn.query(sql);
+		}).then((sql_result) => {
+			console.log(sql_result);
 			var result = sql_result;
-
-			data.id = result[0].Video_id;
-			data.main_title = result[0].VIDEO_Main_Title;
-			data.sub_title = result[0].VIDEO_Sub_Title;
-			data.path = result[0].VIDEO_Path;
-			data.category = result[0].VIDEO_Category;
-			data.script_num = result[0].script_num;
-			data.starttime = result[0].Start_time;
-			data.endtime = result[0].End_time;
-			data.text = result[0].text;
-			
+			data = {
+			'id': result[0].Video_id,
+			'main_title': result[0].VIDEO_Main_Title,
+			'sub_title': result[0].VIDEO_Sub_Title,
+			'path': result[0].VIDEO_Path + '_' + result[0].sentence_id +'.mp4',
+			'script_num': result[0].script_num,
+			'text': result[0].text,
+			'keyword': result[0].keyword,
+			'sentence_id': result[0].sentence_id,
+			'sentence': '',
+			}
+			let sentence_cond = `(sentence_id = ${data.sentence_id} or`;
+			if(data.sentence_id===1) {
+				sentence_cond += ` sentence_id = ${data.sentence_id+1} or sentence_id = ${data.sentence_id+2})`;
+			} else if(data.sentence_id=== lastSentence) {
+				sentence_cond += ` sentence_id = ${data.sentence_id-1} or sentence_id = ${data.sentence_id-2})`;
+			} else {
+				sentence_cond += ` sentence_id = ${data.sentence_id+1} or sentence_id = ${data.sentence_id-1})`;
+			}
+			let sql = `
+				SELECT text, Start_time, End_time
+				FROM SCRIPT_TB
+				WHERE ${sentence_cond} and Video_id = ${videoid}
+			`;
+			return conn.query(sql);
+		}).then((sql_result)=>{
+			let st = encodeSec(sql_result[0].Start_time);
+			data.sentence = sql_result.map((result)=>{
+				return {
+					text: result.text,
+					stime: encodeSec(result.Start_time)
+				}
+			});
+			console.log(data);
 			res.send(data);
 		});
 });
 
-router.get('/path/:videopath', async function(req, res, next) {
-
-	let videopath = req.params.videopath;
-	let path = "http://d1m31uchl59ope.cloudfront.net/" + videopath;
-	let start = "00:01:00";
-	let duration = "00:00:30";
-	var videoData = {
-		filePath: path,
-		startTime: start,
-		duration: duration,
-	}
-	var video = await cutVideo(videoData);
-	const stat = fs.statSync(video.path);
-  	const fileSize = stat.size;
-  	const head = {
-      'Content-Length': fileSize,
-      'Content-Type': 'video/mp4',
-    }
-    res.writeHead(200, head);
-	const file = fs.createWriteStream(video.path);
-	file.pipe(res);
-});
-
-function cutVideo(args) {
-	let outputFile = tmp.tmpNameSync({
-		postfix: `.mp4`
-	});
-	return new Promise((resolve, reject)=>{
-		let query =
-			`ffmpeg -i ${args.filePath} -ss ${args.startTime} -t ${args.duration} ${outputFile} -y`;
-
-		let child = shelljs.exec(query, { async: true, silent: false });
-		child.on('exit' ,(code, signal) => {
-			if(code===0){
-				resolve({
-					path: outputFile,
-				});
-			} else {
-				reject({
-					err: 'error'
-				});
-			}
-		})
-	
-	})
-}
-
 module.exports = router;
+
+
+function encodeSec(hhmmdd) {
+	let time = hhmmdd.split(":");
+	let hours   = parseInt(time[0]);
+    let minutes = parseInt(time[1]);
+    let seconds = parseInt(time[2]);
+
+   	let sec = hours*3600 + minutes*60 + seconds;
+
+   	return sec;
+}
+function decodeSec(sec) {
+
+    var hours   = Math.floor(sec / 3600);
+    var minutes = Math.floor((sec - (hours * 3600)) / 60);
+    var seconds = sec - (hours * 3600) - (minutes * 60);
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    return hours+':'+minutes+':'+seconds;
+}

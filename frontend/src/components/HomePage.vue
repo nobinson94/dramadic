@@ -3,7 +3,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="user-info float-right">
+					<div class="user-info">
 						<template v-if="isLoggedIn">
 							{{ username }}님 반갑습니다. 
 							<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link> 
@@ -19,7 +19,7 @@
 			</div>
 			<div style="height: 70px;"></div>
 			<div class="row">
-				<div class="col-md-12 text-center"><img src="../assets/img/logo.png"></div>
+				<div class="col-md-12 text-center"><img src="../assets/img/logo.png" class="logo-img"></div>
 			</div>
 			<div class="row">
 				<div class="col-md-12 guide text-center">search the words through the videos</div>
@@ -91,21 +91,38 @@ export default {
 
 <style scoped>
 body {
-	height: 100%;
-	background: #00013e;
+		height: 100%;
+		background: #00013e;
 }
-a:hover, a:focus {
-	text-decoration: underline;
-	color: #f2de7d;
+
+@media (min-width: 560px) {
+	a:hover, a:focus {
+		text-decoration: underline;
+		color: #f2de7d;
+	}
+	.guide {
+	  color: #f2de7d;
+	  font-style: italic;
+	  font-size: 20px;
+	}
+	.user-info {
+		padding-top: 20px;
+		color: white;
+		font-size: 20px;
+		text-align: right;
+	}
 }
-.guide {
-  color: #f2de7d;
-  font-style: italic;
-  font-size: 20px;
+
+@media (max-width: 560px) {
+	.logo-img {
+		width: 100%;
+	}
+	.user-info {
+		padding-top: 20px;
+		color: white;
+		font-size: 15px;
+		text-align: center;
+	}
 }
-.user-info {
-	padding-top: 20px;
-	color: white;
-	font-size: 20px;
-}
+
 </style>

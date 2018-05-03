@@ -7,8 +7,129 @@ var router = express.Router();
 let db = require(__DBdir);
 let conn;
 
-router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
+router.get('/list/maintitle/:title', function(req, res, next) {
+	let start = parseInt(req.query.start);
+	let title = '%'+req.params.title+'%';
+	db.getConnection()
+	.then((connection) => {
+		conn = connection;
+
+		let sql = `
+		SELECT *
+		FROM VIDEO_TB
+		WHERE VIDEO_Main_Title LIKE ${title}
+		LIMIT ${start}, 10
+		`;
+
+		return conn.query(sql);
+	})
+	.then((sql_result) => {
+		res.send(sql_result);
+	})
+});
+
+router.get('/list/all', function(req, res, next) {
+
+	let start = parseInt(req.query.start);
 	
+	db.getConnection()
+	.then((connection) => {
+		conn = connection;
+
+		let sql = `
+		SELECT *
+		FROM VIDEO_TB
+		LIMIT ${start}, 10
+		`;
+		
+		return conn.query(sql);
+	})
+	.then((sql_result) => {
+		res.send(sql_result);
+	})
+});
+
+router.get('/list/category/:category', function(req,res,next) {
+	let start = parseInt(req.query.start);
+	let cate = req.params.category;
+
+	db.getConnection()
+	.then((connection) => {
+		conn = connection;
+
+		let sql = `
+		SELECT *
+		FROM VIDEO_TB
+		WHERE VIDEO_Category = ${cate}
+		LIMIT ${start}, 10
+		`;
+
+		return conn.query(sql);
+	})
+	.then((sql_result) => {
+		res.send(sql_result);
+	})
+});
+router.get('/num/includeWord/:word', function(req, res, next) {
+	let word = "("+req.params.word+")";
+
+	db.getConnection()
+	.then((connection)=> {
+		conn = connection;
+		let sql = `
+		SELECT COUNT(*) AS num
+		FROM SCRIPT_TB 
+		WHERE keywords LIKE '%${word}%'
+		`;
+		return conn.query(sql);
+	}).then((sql_result) => {
+		let data = sql_result[0].num;
+		res.send({num: data});
+	})
+});
+router.get('/includeWord/:word', function(req,res,next) {
+	let word = "("+req.params.word+")";
+	let start = parseInt(req.query.start);
+	let data = [];
+
+	db.getConnection()
+	.then((connection) => {
+		conn = connection;
+
+		let sql = `
+		SELECT ST.*, VT.*
+		FROM SCRIPT_TB AS ST
+		JOIN VIDEO_TB AS VT
+		WHERE ST.video_id = VT.INDEX and ST.keywords LIKE '%${word}%'
+		LIMIT ${start}, 4
+		`;
+
+		return conn.query(sql);
+	}).then((sql_result)=> {
+		var result = sql_result;
+		for(var i = 0; i < result.length; i++) {
+			var item = {
+			'video_id': '',
+			'main_title': '',
+			'sub_title': '',
+			'path': '',
+			'script_num': '',
+			'text': '',
+			}
+			item.video_id = result[i].Video_id;
+			item.main_title = result[i].VIDEO_Main_Title;
+			item.sub_title = result[i].VIDEO_Sub_Title;
+			item.path = 'http://dramadicbucket.s3.amazonaws.com/' + result[i].VIDEO_Path + '_' + result[i].sentence_id +'.mp4';;
+			item.script_num = result[i].script_num;
+			item.text = result[i].text;
+			data.push(item);
+		}
+		res.send(data);
+	});
+});
+
+router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
+
 	let videoid = parseInt(req.params.videoid);
 	let scriptnum = parseInt(req.params.scriptnum);
 	let data = null;
@@ -67,7 +188,8 @@ router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 			data.sentence = sql_result.map((result)=>{
 				return {
 					text: result.text,
-					stime: encodeSec(result.Start_time)
+					stime: encodeSec(result.Start_time),
+					etime: encodeSec(result.End_time)
 				}
 			});
 			console.log(data);

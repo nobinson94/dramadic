@@ -2,12 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import MultiPage from '@/components/MultiPage'
 import HomePage from '@/components/HomePage'
-import SearchPage from '@/components/SearchPage'
-import LoginPage from '@/components/LoginPage'
-import SignupPage from '@/components/SignUpPage'
-import WordList from '@/components/WordList'
-import VideoPage from '@/components/VideoPage'
-import UserInfoPage from '@/components/UserInfoPage'
+
+import LoginPage from '@/components/auth/LoginPage'
+import SignupPage from '@/components/auth/SignUpPage'
+import UserInfoPage from '@/components/auth/UserInfoPage'
+
+import WordList from '@/components/search/WordList'
+import SearchPage from '@/components/search/SearchPage'
+
+import VideoPage from '@/components/video/VideoPage'
+
+import AdminPage from '@/components/admin/AdminPage'
+import VideoEditPage from '@/components/admin/VideoEditPage'
 
 Vue.use(Router)
 
@@ -20,6 +26,16 @@ const routes = [
       path: '/',
       component: MultiPage,
       children: [
+        {
+          path: 'admin',
+          component: AdminPage,
+          children: [
+            {
+              path: 'edit',
+              component: VideoEditPage,
+            },
+          ]
+        },
         {
           path: 'search', 
           component: SearchPage,

@@ -7,7 +7,7 @@ let db = require(__DBdir);
 
 const subtitle = fs.readFileSync('subtitle.txt');
 
-lineArray = subtitle.toString().split('\n');
+let lineArray = subtitle.toString().split('\n');
 
 router.get('/', function(req, res, next) {
 	

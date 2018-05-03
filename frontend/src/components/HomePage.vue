@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import LangModalBox from './LangModalBox.vue'
+import LangModalBox from './modalBox/LangModalBox.vue'
 
 export default {
 	created () {
@@ -73,7 +73,7 @@ export default {
 				this.$store.commit('updateTargetWord', val);
 			},
 			get () {
-				return this.$store.state.words.targetWord;
+				return this.$store.state.searchResults.targetWord;
 			}
 		},
 		username() {

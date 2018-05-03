@@ -2,14 +2,12 @@ const request = require('request-promise');
 const urlencode = require('urlencode');
 const xml2js = require('xml2js');
 
-
 const YES = 'y';
 const NO = 'n';
 const parser = new xml2js.Parser();
 const baseURL = "https://krdict.korean.go.kr/api"
 const myAPIkey = "D393C1F077CF383BB7CDE21F07BE0ADD" 
 
-let index;
 //기본값들로 이루어진 쿼리
 let searchquery = {
 	key: myAPIkey,
@@ -79,7 +77,6 @@ async function searchWord(word) {
 
 
 exports.requestBySearch = async (word) => {
-	index = 1;
 	let dataArr = [];
 	let wordSplit = word.split(' ');
 	for(let splitted of wordSplit) {
@@ -91,7 +88,7 @@ exports.requestBySearch = async (word) => {
 }
 
 
-exports.requestByView = function (t_code, lang) {
+exports.requestByView = function (t_code, lang, index) {
 	
 	if(t_code==='') return null;
 	if(lang==='') lang = 1;
@@ -113,6 +110,10 @@ exports.requestByView = function (t_code, lang) {
 		org_word: null, //단어의 원형
 		pron: null, // 단어의 발음
 		der_arr: null,
+		index: index,
+		videoList: [],
+		videoNum: 0,
+		videoTotalNum: 0,
 	};
 	
 	return new Promise(function (resolve, reject) {
@@ -170,10 +171,11 @@ exports.requestByView = function (t_code, lang) {
 			       	}
 			       	//단어의 원형
 			       	if(item.hasOwnProperty('original_language_info')) {
-			       		if(item.original_language_info[0].language_type[0] !== '안 밝힘')
-			       		resultdata.org_word = {
-			       			lang: item.original_language_info[0].original_language[0],
-			       			type: item.original_language_info[0].language_type[0]
+			       		if(item.original_language_info[0].language_type[0] !== '안 밝힘') {
+				       		resultdata.org_word = {
+				       			lang: item.original_language_info[0].original_language[0],
+				       			type: item.original_language_info[0].language_type[0]
+				       		}
 			       		}
 			       	}
 			       	// 단어의 발음
@@ -192,9 +194,7 @@ exports.requestByView = function (t_code, lang) {
 			       			}
 			       		})
 			       	}
-			       	resultdata.videoList = [];
-			       	resultdata.key = index;
-			       	index++; 
+			       	
 			 	} else {
 			 		resultdata = null;
 			 	}

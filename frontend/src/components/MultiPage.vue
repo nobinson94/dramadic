@@ -4,7 +4,8 @@
 		<main-content-box class="content-box"/>
 		<footer-box/>
 
-		<lang-modal-box v-if="showModal"/>
+		<lang-modal-box v-if="showLangModal"/>
+		<new-video-modal-box v-if="showNewVideoModal" />
 	</div>
 </template>
 
@@ -12,16 +13,20 @@
 import HeaderBar from './HeaderBar.vue'
 import MainContentBox from './MainContentBox.vue'
 import FooterBox from './FooterBox.vue'
-import LangModalBox from './LangModalBox.vue'
+import LangModalBox from './modalBox/LangModalBox.vue'
+import NewVideoModalBox from './modalBox/NewVideoModalBox.vue'
 
 export default {
 	components: {
-			HeaderBar,MainContentBox,FooterBox,LangModalBox
+			HeaderBar,MainContentBox,FooterBox,LangModalBox,NewVideoModalBox
 	},
 	computed: {
-		showModal() {
-			return this.$store.getters.showModal;
+		showLangModal() {
+			return this.$store.getters.showLangModal;
     	},
+    	showNewVideoModal() {
+    		return this.$store.getters.showNewVideoModal;
+    	}
 	}
 }
 </script>

@@ -22,7 +22,8 @@ const state = {
     {id: '8', name: 'lang-lo', kor: '타이어', for: 'ภาษาไทย', active: false},
     {id: '9', name: 'lang-id', kor: '인도네시아어', for: 'Bahasa indonesia', active: false},
     {id: '10', name: 'lang-ru', kor: '러시아어', for: 'русский', active: false},
-  ]
+  ],
+  lang: JSON.parse(localStorage.getItem("lang")),
 }
 
 const getters = {
@@ -40,6 +41,9 @@ const getters = {
   },
   langlist: state => {
     return state.languages;
+  },
+  lang: state => {
+    return state.lang;
   }
 }
 
@@ -65,7 +69,7 @@ const actions = {
     })
    },
    logout({ commit }) {
-    var baseURL = this.$http.options.root;
+    const baseURL = this.$http.options.root;
     this.$http.post(`${baseURL}/api/auth/logout`)
     .then((res)=>{
       localStorage.removeItem("token");
@@ -76,11 +80,11 @@ const actions = {
     })
    },
    getUserInfo({commit}) {
-    var baseURL = this.$http.options.root;
+    const baseURL = this.$http.options.root;
     this.$http
     .post(`${baseURL}/api/users`, {id: state.user_info.id})
     .then((res) => {
-      var userinfo = res.data;
+      let userinfo = res.data;
       commit('updateUserInfo', userinfo);
     })
    }

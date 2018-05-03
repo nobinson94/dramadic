@@ -50,7 +50,6 @@ router.post('/checkduplicate', function(req, res, next) {
 			FROM USER_INFO_TB
 			WHERE USER_ID = '${email}'
 		`
-		console.log(sql);
 		return connection.query(sql);
 	})
 	.then((sql_result) => {

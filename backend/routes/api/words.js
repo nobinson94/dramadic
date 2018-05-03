@@ -8,12 +8,29 @@ let db = require(__DBdir);
 
 router.get('/', async function(req, res, next) {
 	let lang = req.query.lang;
-	let code = req.query.code;
+	let method = req.query.method;
+	let resultData = null;
 
-	let data = await krdict.requestByView(code, lang);
+	switch(method) {
+	case 'view' :
+		let code = req.query.code;
+		resultData = await krdict.requestByView(code, lang);
+		break;
+	case 'search' :
+		let index = 1;
+		let words = req.query.words;
+		let matchData = await krdict.requestBySearch(words);
+		resultData = [];
+		for(let data of matchData) {
+			resultData.push(await krdict.requestByView(data.code, lang, index));
+			index++;
+		}
+		break;
+	}
 	
-	console.log(data);
-	res.send(data);
+	console.log(resultData);
+	res.send(resultData);
 });
+
 
 module.exports = router;

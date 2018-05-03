@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import words from './modules/words'
-import videos from './modules/videos'
+import video from './modules/video'
 import users from './modules/user'
 import modals from './modules/modals'
+import searchResults from './modules/searchResults'
+import videoAdmin from './modules/videoAdmin'
 
 Vue.use(Vuex);
 Vuex.Store.prototype.$http = axios
@@ -12,9 +13,10 @@ Vuex.Store.prototype.$http.options.root = process.env.NODE_ENV === 'production' 
 
 export const store = new Vuex.Store({
   modules: {
-    words,
-    videos,
+    video,
     users,
-    modals
+    modals,
+    searchResults,
+    videoAdmin
   },
 });

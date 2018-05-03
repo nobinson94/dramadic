@@ -3,27 +3,40 @@ const state = {
 		id: '',
 		scriptnum: ''
 	},
+	wordCode: null,
 	video: null,
+	word: null,
 	lang: JSON.parse(localStorage.getItem("lang")),
 }
 
 const getters = {
 	video : function(state) {
-		return state.video
+		return state.video;
 	},
+	word: function(state) {
+		return state.word;
+	}
 }
 const actions = {
 	getVideo ({commit}) {
-		var baseURL = this.$http.options.root;
-		var video = [];
+		let video;
+		const baseURL = this.$http.options.root;
 		this.$http.get(`${baseURL}/api/videos/${state.videoinfo.id}/scriptnum/${state.videoinfo.scriptnum}`)
 		.then((response) => {
-			console.log(response.data);
 			video = response.data;
 		}).then(function() {
 			commit('updateVideo', video);
 		})
 	},
+	getWord({commit}) {
+		const baseURL = this.$http.options.root;
+		this.$http.get(`${baseURL}/api/words?lang=${state.lang.id}&code=${state.wordCode}&method=view`)
+		.then((response) => {
+			let tempObj = response.data;
+			commit('updateWord', tempObj);
+		})
+	},
+
 }
 
 const mutations = {
@@ -33,7 +46,13 @@ const mutations = {
 	},
 	updateVideo(state, video) {
 		state.video = video;
-	}
+	},
+	updateWordCode(state, wordCode) {
+		state.wordCode = wordCode;
+	},
+	updateWord (state, word) {
+		state.word = word;
+	},
 }
 
 export default {

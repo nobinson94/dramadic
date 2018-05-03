@@ -9,7 +9,7 @@
 <script>
 import ReferedWordList from './ReferedWordList.vue'
 import WordList from './WordList.vue'
-import LoadPage from './LoadPage.vue'
+import LoadPage from '../LoadPage.vue'
 
 export default {
 	data () {
@@ -25,7 +25,7 @@ export default {
   	},
   	methods: {
   		fetchData: function() {
-  			this.$store.commit('updateSearchedWordList', null);
+  			this.$store.commit('updateWordList', null);
   			this.loading = true;
 
   			let targetWord = this.$route.query.word

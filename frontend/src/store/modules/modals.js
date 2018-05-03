@@ -1,17 +1,27 @@
 const state = {
-	showModal: false,
+	showLangModal: false,
+	showNewVideoModal: false,
 }
 const getters = {
-	showModal: state => {
-		return state.showModal
+	showLangModal: state => {
+		return state.showLangModal
+	},
+	showNewVideoModal: state => {
+		return state.showNewVideoModal
 	}
 }
 const mutations = {
-	showModal (state) {
-		state.showModal = true;
+	showLangModal (state) {
+		state.showLangModal = true;
 	},
-	hideModal (state) {
-		state.showModal = false;
+	hideLangModal (state) {
+		state.showLangModal = false;
+	},
+	showNewVideoModal (state) {
+		state.showNewVideoModal = true;
+	},
+	hideNewVideoModal (state) {
+		state.showNewVideoModal = false;
 	}
 }
 const actions = {

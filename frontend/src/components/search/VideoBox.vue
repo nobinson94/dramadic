@@ -1,5 +1,6 @@
 <template>
 	<div class="col-md-3">
+		<load-page v-if="loading" />
 		<router-link :to="{ path:'video', query: {videoid: video.video_id , scriptnum: video.script_num, targetcode: wordcode} }" >
 			<video class="video-box">
 				<source :src="video.path" type="video/mp4">
@@ -23,17 +24,19 @@
 <script>
 	
 export default {
-	props: {
-  		video: {
-  			type: Object,
-  		},
+	data () {
+	    return {
+	      loading: false,
+	    }
+  	},
+  	props: {
   		wordcode: {
   			type: Number,
+  		},
+  		video: {
+  			type: Object,
   		}
-  	}, 
-	components: {
-
-	}
+  	}
 }
 </script>
 

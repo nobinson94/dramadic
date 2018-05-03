@@ -22,7 +22,7 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="modal-default-button" @click="hideModal">
+              <button class="modal-default-button btn btn-outline-dark" @click="hideModal">
               	취소
               </button>
             </slot>
@@ -52,12 +52,12 @@ export default {
   },
 	methods: {
 		hideModal() {
-			this.$store.commit('hideModal')
+			this.$store.commit('hideLangModal')
 		},
     selectLang : function(id) {
       localStorage.setItem("lang", JSON.stringify(this.langs[id-1]));
       this.$store.commit('updateLang', this.langs[id-1]);
-      this.$store.commit('hideModal');
+      this.$store.commit('hideLangModal');
       this.$router.go(this.$router.currentRoute);
     }
 	}

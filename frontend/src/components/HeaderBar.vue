@@ -35,8 +35,6 @@
 </template>
 
 <script>
-import SearchPage from './SearchPage.vue'
-
 export default {
 	methods: {
 		logout() {
@@ -47,7 +45,7 @@ export default {
 			else this.$router.push({path: 'search', query: {word: this.targetWord}});
 		},
 		showModal() {
-			this.$store.commit('showModal');
+			this.$store.commit('showLangModal');
 		}
 	},
 	computed: {
@@ -59,7 +57,7 @@ export default {
 				this.$store.commit('updateTargetWord', val);
 			},
 			get () {
-				return this.$store.state.words.targetWord;
+				return this.$store.state.searchResults.targetWord;
 			}
 		},
 		username() {
@@ -67,7 +65,7 @@ export default {
 		},
 		lang() {
 			if(localStorage.getItem("lang")) return this.$store.getters.lang;
-			var langObj = {kor : '영어', for: 'Eng', id: '1',name: 'lang-en',active:true};
+			let langObj = {kor : '영어', for: 'Eng', id: '1', name: 'lang-en', active:true};
 			localStorage.setItem("lang", JSON.stringify(langObj));
 			return langObj;
 		}

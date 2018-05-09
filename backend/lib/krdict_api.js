@@ -60,8 +60,6 @@ async function searchWord(word) {
 		       			resultdata.code = parseInt(item.target_code[0]); //target_code
 			       		resultdataArr.push(resultdata);
 		       		}
-			 	} else {
-			 		resultdataArr = null;
 			 	}
 			})
 		})
@@ -196,7 +194,7 @@ exports.requestByView = function (t_code, lang, index) {
 			       	}
 			       	
 			 	} else {
-			 		resultdata = null;
+			 		resultdata = [];
 			 	}
 			})
 		})

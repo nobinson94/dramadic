@@ -1,7 +1,8 @@
 <template>
 	<div class="container content-box">
-		<load-page v-if="loading" />
-		<word-list v-if="words" v-bind:words="words"/>
+		<load-page v-if="wordNum === -1" />
+		<word-list v-if="wordNum > 0" v-bind:words="words"/>
+		<no-result-page v-if="wordNum === 0"/>
 	</div>
 </template>
 
@@ -10,13 +11,9 @@
 import ReferedWordList from './ReferedWordList.vue'
 import WordList from './WordList.vue'
 import LoadPage from '../LoadPage.vue'
+import NoResultPage from './NoResultPage.vue'
 
 export default {
-	data () {
-	    return {
-	      loading: false,
-	    }
-  	},
 	created () {
 		this.fetchData();
 	},
@@ -26,21 +23,22 @@ export default {
   	methods: {
   		fetchData: function() {
   			this.$store.commit('updateWordList', null);
-  			this.loading = true;
-
+  			this.$store.commit('updateWordNum', -1);
   			let targetWord = this.$route.query.word
-			this.$store.commit('updateTargetWord', targetWord);
-			this.$store.dispatch('getWordList');
-			this.loading = false;
+			  this.$store.commit('updateTargetWord', targetWord);
+			  this.$store.dispatch('getWordList');
   		}
   	},
   	computed: {
   		words() {
   			return this.$store.getters.wordList;
+  		},
+  		wordNum() {
+  			return this.$store.getters.wordNum;
   		}
   	},
 	components: {
-			ReferedWordList, WordList, LoadPage
+			ReferedWordList, WordList, LoadPage, NoResultPage
 	}
 }
 </script>	

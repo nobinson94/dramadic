@@ -3,6 +3,7 @@ const state = {
 	lang: JSON.parse(localStorage.getItem("lang")), //search 할때 번역할 외국어
 	refWordList: [],
 	wordList: null,
+	wordNum: -1,
 }
 
 const getters = {
@@ -11,6 +12,9 @@ const getters = {
 	},
 	refWordList: function(state) {
 		return state.refWordList;
+	},
+	wordNum: function(state) {
+		return state.wordNum;
 	}
 }
 
@@ -21,9 +25,8 @@ const actions = {
 
 		this.$http.get(`${baseURL}/api/words?lang=${state.lang.id}&words=${state.targetWord}&method=search`)
 		.then((response) => {
-			console.log(response.data);
 			let tempArr = response.data;
-			
+			commit('updateWordNum', tempArr.length);
 			commit('updateWordList', tempArr);
 		})
 	},
@@ -43,10 +46,10 @@ const actions = {
 
 		this.$http.get(`${baseURL}/api/videos/includeWord/${payload.targetWord}?start=${payload.start}`)
 		.then((response) => {
-		
 			let videoList = response.data;
 			console.log(videoList);
 			commit('updateVideoList',{id: parseInt(payload.index)-1 , video: videoList});
+			payload.self.loadingVideo = false;
 		})
 	},
 	
@@ -57,6 +60,9 @@ const mutations = {
 	},
 	updateWordList (state, wordlist) {
 		state.wordList = wordlist;
+	},
+	updateWordNum (state, num) {
+		state.wordNum = num;
 	},
 	updataRefWordList (state, refWords) {
 		state.refWordList = refWords;

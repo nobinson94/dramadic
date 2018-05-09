@@ -21,9 +21,11 @@ router.get('/', async function(req, res, next) {
 		let words = req.query.words;
 		let matchData = await krdict.requestBySearch(words);
 		resultData = [];
-		for(let data of matchData) {
-			resultData.push(await krdict.requestByView(data.code, lang, index));
-			index++;
+		if(matchData.length!==0) {
+			for(let data of matchData) {
+				resultData.push(await krdict.requestByView(data.code, lang, index));
+				index++;
+			}
 		}
 		break;
 	}

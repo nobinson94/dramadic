@@ -1,5 +1,8 @@
 <template>
-	<div class="container">
+	<div class="container">	
+		<div class="new-video-btn-box">
+			<button class="btn btn-outline-dark float-right" @click="showModal">새로운 영상 등록하기</button>	
+		</div>
 		<div class="video-list-box">
 
 			<div class="collapse" id="filterBox">
@@ -29,7 +32,7 @@
 				</div>
 			</div>
 			
-			<table class="table">
+			<table class="table table-sm">
 				<thead>
 					<th>#</th>
 					<th>Title / 제목</th>
@@ -45,7 +48,9 @@
 						<td>{{ index+1 }}</td>
 						<td>&lt;{{ v.VIDEO_Main_Title }}&gt; {{ v.VIDEO_Sub_Title }}</td>
 						<td>{{ v.VIDEO_Category }}</td>
-						<td><button class="btn btn-outline-dark btn-sm">수정하기</button></td>
+						<td>
+							<router-link :to="{path: `/admin/edit`, query: {videoid: v.VIDEO_INDEX} }" tag="button" class="btn btn-outline-dark btn-sm">Edit</router-link>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -64,11 +69,14 @@ export default {
 				method: 'all',
 				start: 0,
 			});
+		},
+		showModal() {
+			this.$store.commit('showNewVideoModal');
 		}
 	},
 	computed: {
 		videoList() {
-			return this.$store.getters.videoList;
+			return this.$store.getters.editVideoList;
 		}
 	}
 }
@@ -92,6 +100,10 @@ img {
 	vertical-align: middle;	
 }
 .video-list-box {
-	padding-top: 10px;
+	margin-top: 10px;
+}
+.new-video-btn-box {
+	height: 40px;
+	padding-bottom: 15px;
 }
 </style>

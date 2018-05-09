@@ -25,7 +25,7 @@
 				</div>
 			</div>
 		</div>
-		<video-list v-bind:word="word" />
+		<video-list v-bind:word="word"/>
 	</div>
 </template>
 

@@ -6,7 +6,26 @@ var request = require('request');
 var router = express.Router();
 let db = require(__DBdir);
 let conn;
+router.get('/:videoid', function(req, res, next) {
+	let videoid = parseInt(req.params.videoid);
 
+	db.getConnection()
+	.then((connection) => {
+		conn = connection;
+
+		let sql = `
+		SELECT *
+		FROM VIDEO_TB
+		WHERE VIDEO_INDEX = ${videoid}
+		`;
+
+		return conn.query(sql);
+	}).then((sql_result) => {
+		console.log(sql_result[0]);
+		conn.release();
+		res.send(sql_result[0]);
+	});
+});
 router.get('/list/maintitle/:title', function(req, res, next) {
 	let start = parseInt(req.query.start);
 	let title = '%'+req.params.title+'%';
@@ -24,6 +43,7 @@ router.get('/list/maintitle/:title', function(req, res, next) {
 		return conn.query(sql);
 	})
 	.then((sql_result) => {
+		conn.release();
 		res.send(sql_result);
 	})
 });
@@ -45,6 +65,7 @@ router.get('/list/all', function(req, res, next) {
 		return conn.query(sql);
 	})
 	.then((sql_result) => {
+		console.log(sql_result);
 		res.send(sql_result);
 	})
 });
@@ -67,6 +88,7 @@ router.get('/list/category/:category', function(req,res,next) {
 		return conn.query(sql);
 	})
 	.then((sql_result) => {
+		conn.release();
 		res.send(sql_result);
 	})
 });
@@ -84,10 +106,11 @@ router.get('/num/includeWord/:word', function(req, res, next) {
 		return conn.query(sql);
 	}).then((sql_result) => {
 		let data = sql_result[0].num;
+		conn.release();
 		res.send({num: data});
 	})
 });
-router.get('/includeWord/:word', function(req,res,next) {
+router.get('/includeWord/:word', function(req, res, next) {
 	let word = "("+req.params.word+")";
 	let start = parseInt(req.query.start);
 	let data = [];
@@ -100,7 +123,7 @@ router.get('/includeWord/:word', function(req,res,next) {
 		SELECT ST.*, VT.*
 		FROM SCRIPT_TB AS ST
 		JOIN VIDEO_TB AS VT
-		WHERE ST.video_id = VT.INDEX and ST.keywords LIKE '%${word}%'
+		WHERE ST.video_id = VT.VIDEO_INDEX and ST.keywords LIKE '%${word}%'
 		LIMIT ${start}, 4
 		`;
 
@@ -152,7 +175,7 @@ router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 				SELECT ST.*, VT.*
 				FROM SCRIPT_TB AS ST
 				JOIN VIDEO_TB AS VT
-				WHERE ST.Video_id = VT.INDEX and ST.Video_id = ${videoid} and ST.script_num = ${scriptnum}
+				WHERE ST.Video_id = VT.VIDEO_INDEX and ST.Video_id = ${videoid} and ST.script_num = ${scriptnum}
 			`;
 			return conn.query(sql);
 		}).then((sql_result) => {
@@ -193,6 +216,7 @@ router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 				}
 			});
 			console.log(data);
+			conn.release();
 			res.send(data);
 		});
 });

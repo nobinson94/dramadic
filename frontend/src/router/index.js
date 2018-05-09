@@ -14,6 +14,7 @@ import VideoPage from '@/components/video/VideoPage'
 
 import AdminPage from '@/components/admin/AdminPage'
 import VideoEditPage from '@/components/admin/VideoEditPage'
+import VideoSelectPage from '@/components/admin/VideoSelectPage'
 
 Vue.use(Router)
 
@@ -30,6 +31,10 @@ const routes = [
           path: 'admin',
           component: AdminPage,
           children: [
+            {
+              path: '',
+              component: VideoSelectPage
+            },
             {
               path: 'edit',
               component: VideoEditPage,
@@ -67,5 +72,6 @@ const routes = [
 ]
 
 export default new Router({
+  mode: 'history',
   routes
 })

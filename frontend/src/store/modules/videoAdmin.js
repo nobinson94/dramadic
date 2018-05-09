@@ -1,6 +1,8 @@
 const state = {
 	adminName: '관리자1',
 	editVideoList: [],
+	editScriptList: [],
+	editVideoInfo: '',
 }
 const getters = {
 	adminName: state => {
@@ -8,13 +10,27 @@ const getters = {
 	},
 	editVideoList: state => {
 		return state.editVideoList;
+	},
+	editScriptList: state => {
+		return state.editScriptList;
+	},
+	editVideoInfo: state => {
+		return state.editVideoInfo;
 	}
 }
 const mutations = {
 	updateEditVideoList (state, videoList) {
-		state.videoList = videoList;
+		state.editVideoList = videoList;
+	},
+	updateEditScriptList (state, scriptList) {
+		state.editScriptList = scriptList;
+	},
+	updateEditVideoInfo (state, videoInfo) {
+		state.editVideoInfo = videoInfo;
+	},
+	updateEditVideoCategory (state, cat) {
+		state.editVideoInfo.VIDEO_Category = cat;
 	}
-	
 }
 const actions = {
 	getEditVideoList({commit}, payload) {
@@ -30,6 +46,21 @@ const actions = {
 				commit('updateEditVideoList', response.data);
 			});
 		}
+	},
+	getEditScriptList({commit}, payload) {
+		const baseURL = this.$http.options.root;
+		this.$http.get(`${baseURL}/api/subtitle/${payload.videoid}?start=${payload.start}`)
+		.then((response) => {
+			commit('updateEditScriptList', response.data);
+		})
+
+	},
+	getEditVideoInfo({commit}, payload) {
+		const baseURL = this.$http.options.root;
+		this.$http.get(`${baseURL}/api/videos/${payload.videoid}`)
+		.then((response) => {
+			commit('updateEditVideoInfo', response.data);
+		});
 	}
 }
 

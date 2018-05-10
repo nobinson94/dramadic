@@ -5,9 +5,14 @@
 				<div class="col-md-12">
 					<div class="user-info">
 						<template v-if="isLoggedIn">
-							{{ username }}님 반갑습니다. 
-							<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link> 
-							<a href="" @click.prevent="logout" class="font-dramadic">로그아웃</a>
+							<div>
+								{{ username }}님 반갑습니다!
+							</div>
+							<div>
+							 	<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link>
+								<a href="" @click.prevent="logout" class="font-dramadic">로그아웃</a>
+								<router-link :to="{path: '/admin'}" v-if="isAdminUser" class="font-dramadic">비디오 관리하기</router-link>
+							</div>
 						</template>
 						<template v-else>
 							<router-link :to="{path: '/signup'}" class="font-dramadic">Sign Up</router-link>
@@ -61,12 +66,15 @@ export default {
 			this.$store.dispatch('logout');
 		},
 		showModal() {
-			this.$store.commit('showModal');
+			this.$store.commit('showLangModal');
 		}
 	},
 	computed: {
 		isLoggedIn() {
 			return this.$store.getters.isLoggedIn;
+    	},
+    	isAdminUser() {
+    		return this.$store.getters.isAdmin;
     	},
 		targetWord: {
 			set (val) {
@@ -80,7 +88,7 @@ export default {
 			return this.$store.getters.userName;
 		},
 		showModalState() {
-			return this.$store.getters.showModal;
+			return this.$store.getters.showLangModal;
     	},
 	},
 	components: {
@@ -108,7 +116,7 @@ body {
 	.user-info {
 		padding-top: 20px;
 		color: white;
-		font-size: 20px;
+		font-size: 16px;
 		text-align: right;
 	}
 }

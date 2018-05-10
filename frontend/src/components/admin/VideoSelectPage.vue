@@ -10,8 +10,8 @@
 					<div class="col-md-5">
 						<form class="form-inline">
 							<label for="title" class="col-sm-4">Title/제목</label>
-							<input type="text" class="form-control col-sm-5" id="title">	
-							<button class="btn btn-light">
+							<input type="text" class="form-control col-sm-5" v-model="searchTitle">	
+							<button class="btn btn-light" @click.prevent="searchByTitle">
 								<div class="search-btn-img">
 									<img src="../../assets/img/search-btn-black.png"/>
 								</div>
@@ -21,8 +21,12 @@
 					<div class="col-md-5">
 						<form class="form-inline">
 						    <label for="category" class="col-sm-4">Category/분류</label>
-						    <input type="text" class="form-control col-sm-5" id="category">
-						  	<button class="search-btn btn btn-light">
+						    <select class="custom-select col-sm-5" v-model="searchCategory">
+		                      <option value="교양">교양</option>
+		                      <option value="예능">예능</option>
+		                      <option value="드라마">드라마</option>
+		                    </select>
+						    <button class="search-btn btn btn-light" @click.prevent="searchByCategory">
 							  	<div class="search-btn-img">
 									<img src="../../assets/img/search-btn-black.png"/>
 								</div>
@@ -60,6 +64,12 @@
 
 <script>
 export default {
+	data() {
+		return {
+			searchTitle: '',
+			searchCategory: '',
+		}
+	},
 	created() {
 		this.fetchData();
 	},
@@ -70,8 +80,24 @@ export default {
 				start: 0,
 			});
 		},
-		showModal() {
+		showModal: function() {
 			this.$store.commit('showNewVideoModal');
+		},
+		searchByTitle: function() {
+			let targetTitle = this.searchTitle;
+			this.$store.dispatch('getEditVideoList', {
+				method: 'title',
+				target: targetTitle,
+				start: 0,
+			})
+		},
+		searchByCategory: function() {
+			let targetCat = this.searchCategory;
+			this.$store.dispatch('getEditVideoList', {
+				method: 'category',
+				target: targetCat,
+				start: 0,
+			})
 		}
 	},
 	computed: {

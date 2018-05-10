@@ -19,7 +19,7 @@
 						<input type="text" class="form-control" v-model="video.VIDEO_Category">
 					</div>					
 				</div>
-				<table class="table table-sm">
+				<table class="table table-sm table-hover">
 					<thead>
 						<th>#</th>
 						<th>Start Time</th>
@@ -30,22 +30,22 @@
 					</thead>
 					<tbody>
 						<tr v-for="script in scriptList">
-							<td>{{ script.script_num }}</td>
-							<td>{{ script.Start_time }}</td>
-							<td>{{ script.End_time }}</td>
+							<td>{{ script.scriptNum }}</td>
+							<td>{{ script.sTime }}</td>
+							<td>{{ script.eTime }}</td>
 							<td>
 								<input type="text" class="form-control" v-model="script.text">
 							</td>
-							<td>
+							<td>	
 								<vue-tags-input
 								v-if="script.keywords"
 								v-model="script.keyword"
 								:tags="script.keywords"
       							@tags-changed="newTags => script.keywords = newTags"
-    							/>
+      							/>
 							</td>
 							<td>
-								<input type="text" class="form-control" v-model="script.sentence_id">
+								<input type="text" class="form-control form-control-sm" v-model="script.sentenceNum">
 							</td>
 						</tr>
 					</tbody>

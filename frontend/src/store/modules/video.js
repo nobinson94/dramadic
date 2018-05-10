@@ -7,6 +7,8 @@ const state = {
 	video: null,
 	word: null,
 	lang: JSON.parse(localStorage.getItem("lang")),
+	loadingVideo: true,
+	loadingWord: true,
 }
 
 const getters = {
@@ -15,6 +17,9 @@ const getters = {
 	},
 	word: function(state) {
 		return state.word;
+	},
+	loadingVideo: function(state) {
+		return state.loadingVideo
 	}
 }
 const actions = {
@@ -45,12 +50,14 @@ const mutations = {
 		state.videoinfo.scriptnum = videoinfo.scriptnum;
 	},
 	updateVideo(state, video) {
+		state.loadingVideo = false;
 		state.video = video;
 	},
 	updateWordCode(state, wordCode) {
 		state.wordCode = wordCode;
 	},
 	updateWord (state, word) {
+		state.loadingWord = false;
 		state.word = word;
 	},
 }

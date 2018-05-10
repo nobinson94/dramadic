@@ -4,12 +4,15 @@ const LOGOUT = "LOGOUT";
 
 const state = {
   isLoggedIn: !!localStorage.getItem("token"),
+  isAdmin: parseInt(localStorage.getItem("level")),
+  id: localStorage.getItem("user_id"),
   user_info: {
-    id: localStorage.getItem("user_id"),
-    name: localStorage.getItem("user_name"),
+    id: '',
+    name: '',
     address: '',
     lang: '',
     phone: '',
+    level: '',
   },
   languages: [
     {id: '1', name: 'lang-en', kor: '영어', for: 'English', active: false},
@@ -29,6 +32,9 @@ const state = {
 const getters = {
   isLoggedIn: state => {
     return state.isLoggedIn;
+  },
+  isAdmin: state => {
+    return state.isAdmin;
   },
   userEmail: state => {
     return state.user_info.id;
@@ -64,6 +70,7 @@ const actions = {
           localStorage.setItem("user_id", res.data.USER_ID);
           localStorage.setItem("user_name", res.data.USER_NAME);
           localStorage.setItem("lang", JSON.stringify(state.languages[res.data.lang]));
+          localStorage.setItem("level", res.data.level);
           commit(LOGIN_SUCCESS);
         }
     })
@@ -76,13 +83,14 @@ const actions = {
       localStorage.removeItem("user_id");
       localStorage.removeItem("user_name");
       localStorage.setItem("lang", JSON.stringify(state.languages[0]));
+      localStorage.setItem("level", 0);
       commit(LOGOUT);
     })
    },
    getUserInfo({commit}) {
     const baseURL = this.$http.options.root;
     this.$http
-    .post(`${baseURL}/api/users`, {id: state.user_info.id})
+    .post(`${baseURL}/api/users`, {id: state.id})
     .then((res) => {
       let userinfo = res.data;
       commit('updateUserInfo', userinfo);
@@ -102,6 +110,8 @@ const mutations = {
     state.isLoggedIn = false;
   },
   updateUserInfo(state, userInfo) {
+    state.user_info.id = userInfo.id;
+    state.user_info.name = userInfo.name;
     state.user_info.address = userInfo.address;
     state.user_info.phone = userInfo.phone;
     state.user_info.lang = state.languages[parseInt(userInfo.lang)];

@@ -15,9 +15,14 @@
 				<div class="info-container d-none d-sm-block">
 					<div class="user-info-container">
 						<template v-if="isLoggedIn">
-							 {{ username }}님 반갑습니다!
-							<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link>
-							<a href="" @click.prevent="logout">로그아웃</a>
+							<div>
+								{{ username }}님 반갑습니다!
+							</div>
+							<div>
+							 	<router-link :to="{path: '/userinfo'}" class="font-dramadic">회원정보</router-link>
+								<a href="" @click.prevent="logout">로그아웃</a>
+								<router-link :to="{path: '/admin'}" v-if="isAdminUser" class="font-dramadic">비디오 관리하기</router-link>
+							</div>
 						</template>
 						<template v-else>
 							<router-link :to="{path: '/signup'}">Sign Up</router-link>
@@ -51,6 +56,9 @@ export default {
 	computed: {
 		isLoggedIn() {
 			return this.$store.getters.isLoggedIn;
+    	},
+    	isAdminUser() {
+    		return this.$store.getters.isAdmin;
     	},
 		targetWord: {
 			set (val) {
@@ -123,11 +131,12 @@ export default {
 		color: white;
 	}
 	.info-container a {
-		font-size: 20px;
+		font-size: 16px;
 		color: #f2de7d;
 	}
 	.user-info-container {
-		height: 50px;
+		font-size: 16px;
+		height: 55px;
 	}
 	.search-form-container {
 		padding-top: 15px;

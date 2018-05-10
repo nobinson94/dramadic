@@ -22,9 +22,12 @@ router.post('/', function(req, res, next) {
 
 	}).then((sql_result) => {
 		let user_data = {
+			id: sql_result[0].USER_ID,
+			name: sql_result[0].USER_NAME,
 			address : sql_result[0].USER_ADDRESS,
 			lang : sql_result[0].default_lang,
-			phone: sql_result[0].USER_PHONE, 
+			phone: sql_result[0].USER_PHONE,
+			level: sql_result[0].USER_LEVEL, 
 		}
 		if (user_data.lang === null) user_data.lang = 1;
 		res.send(user_data);

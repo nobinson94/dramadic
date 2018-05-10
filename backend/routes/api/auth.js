@@ -21,13 +21,14 @@ router.post('/signup', function(req, res, next) {
     'address' : mysql.escape(user_info.address),
     'lang': mysql.escape(user_info.lang),
     'phone': mysql.escape(user_info.phone),
+    'level': 0
   	};
 
 	db.getConnection()
 	.then((connection) => {
 		let sql = `
-			INSERT INTO USER_INFO_TB (USER_ID, USER_PW, SALT, USER_NAME, USER_ADDRESS, CREATE_DT, RECENT_LOGIN_DT, USER_PHONE, default_lang)
-			VALUES (${users['email']}, ${users['pwd']}, ${users['salt']}, ${users['name']}, ${users['address']}, now(), now(),${users['phone']},${users['lang']} )
+			INSERT INTO USER_INFO_TB (USER_ID, USER_PW, SALT, USER_NAME, USER_ADDRESS, CREATE_DT, RECENT_LOGIN_DT, USER_PHONE, default_lang, USER_LEVEL)
+			VALUES (${users['email']}, ${users['pwd']}, ${users['salt']}, ${users['name']}, ${users['address']}, now(), now(),${users['phone']},${users['lang']}, ${users['level']} )
 		`;
 		
 		return connection.query(sql, (error, results, fields) => {

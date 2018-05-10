@@ -1,6 +1,7 @@
 <template>
 	<div class="container">
-		<div class="row">
+		<load-page v-if="loading" class="loadpage"/>
+		<div class="row" v-if="!loading">
 			<div class="col-md-12 video-title-container">
 				<strong>{{ video.main_title }}</strong> {{ video.sub_title }}
 			</div>
@@ -41,10 +42,11 @@
 
 <script>
 import VideoPlayer from './VideoPlayer.vue'
+import LoadPage from '../LoadPage.vue'
 
 export default {
 	components: {
-		VideoPlayer
+		VideoPlayer, LoadPage
 	},
 	created () {
 		this.fetchData();
@@ -58,6 +60,9 @@ export default {
 		},
 		word() {
 			return this.$store.getters.word
+		},
+		loading() {
+			return this.$store.getters.loadingVideo	
 		}
 	},
 	methods: {
@@ -79,6 +84,7 @@ export default {
 </script>
 
 <style scoped>
+
 .video-title-container {
 	padding-bottom: 10px;
 	font-size: 22px;

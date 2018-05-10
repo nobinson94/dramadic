@@ -45,7 +45,7 @@ const actions = {
 			.then((response) => {
 				commit('updateEditVideoList', response.data);
 			});
-		}
+		} 
 	},
 	getEditScriptList({commit}, payload) {
 		const baseURL = this.$http.options.root;

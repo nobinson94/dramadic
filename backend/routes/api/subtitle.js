@@ -24,21 +24,42 @@ router.get('/:videoid', function(req, res, next) {
 
 	}).then((sql_result) => {
 		let scriptList = sql_result;
-		
+		let returnDataArray = [];
+
 		for(script of scriptList) {
-			if(script.keywords === null) {
-				script.keywords = [];
+			let returnData = {
+				eTime: '',
+				sTime: '',
+				keywords: [],
+				keyword: '',
+				text: '',
+				scriptNum: '',
+				sentenceNum: '',
+			}
+			let tempEndTime = script.End_time.split('/');
+			returnData.eTime = tempEndTime[0];
+			let tempStartTime = script.Start_time.split('/');
+			returnData.sTime = tempStartTime[0];
+			returnData.text = script.text.trim();
+			returnData.scriptNum = script.script_num;
+			returnData.sentenceNum = script.sentence_id;
+			if(script.keywords === null || script.keywords.trim() === '') {
+				returnData.keywords = [];
 			} else {
 				let len = script.keywords.length;
 				let tempArr = script.keywords.substr(1, len-2);
 				tempArr = tempArr.split(")(");
-				script.keywords = tempArr;
+				returnData.keywords = tempArr.map(function(value, index) {
+					return {
+						text: value
+					}
+				});
 			}
-			script.keyword = '';
+			returnDataArray.push(returnData);
 		}
 		conn.release();
-		console.log(scriptList);
-		res.send(scriptList);
+		console.log(returnDataArray);
+		res.send(returnDataArray);
 	});
 
 });

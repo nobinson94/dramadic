@@ -26,20 +26,18 @@ router.get('/:videoid', function(req, res, next) {
 		res.send(sql_result[0]);
 	});
 });
-router.get('/list/maintitle/:title', function(req, res, next) {
+router.get('/list/title/:title', function(req, res, next) {
 	let start = parseInt(req.query.start);
-	let title = '%'+req.params.title+'%';
+	let title = req.params.title.trim();
 	db.getConnection()
 	.then((connection) => {
 		conn = connection;
-
 		let sql = `
 		SELECT *
 		FROM VIDEO_TB
-		WHERE VIDEO_Main_Title LIKE ${title}
+		WHERE CONCAT(VIDEO_Main_Title, ' ', VIDEO_Sub_Title) LIKE '%${title}%'
 		LIMIT ${start}, 10
 		`;
-
 		return conn.query(sql);
 	})
 	.then((sql_result) => {
@@ -47,7 +45,6 @@ router.get('/list/maintitle/:title', function(req, res, next) {
 		res.send(sql_result);
 	})
 });
-
 router.get('/list/all', function(req, res, next) {
 
 	let start = parseInt(req.query.start);
@@ -72,8 +69,8 @@ router.get('/list/all', function(req, res, next) {
 
 router.get('/list/category/:category', function(req,res,next) {
 	let start = parseInt(req.query.start);
-	let cate = req.params.category;
-
+	let cate = req.params.category.trim();
+	console.log(cate);
 	db.getConnection()
 	.then((connection) => {
 		conn = connection;
@@ -81,7 +78,7 @@ router.get('/list/category/:category', function(req,res,next) {
 		let sql = `
 		SELECT *
 		FROM VIDEO_TB
-		WHERE VIDEO_Category = ${cate}
+		WHERE VIDEO_Category = '${cate}'
 		LIMIT ${start}, 10
 		`;
 

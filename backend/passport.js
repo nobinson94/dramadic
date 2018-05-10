@@ -35,7 +35,6 @@ exports.setup = function (passport) {
   			return conn.query(sql);
   		})
   		.then((sql_result) => {
-
   			if(sql_result.length > 0) {
   				let pw = sql_result[0]['USER_PW'];
   				let salt = sql_result[0]['SALT'];
@@ -46,7 +45,8 @@ exports.setup = function (passport) {
   					let user = {
               'USER_ID' : sql_result[0]['USER_ID'],
             	'USER_NAME' : sql_result[0]['USER_NAME'],
-              'lang': sql_result[0]['default_lang']
+              'lang': sql_result[0]['default_lang'],
+              'level': sql_result[0]['USER_LEVEL'],
             };
 
             conn.query(`UPDATE USER_INFO_TB SET RECENT_LOGIN_DT = now() WHERE USER_ID = '${sql_result[0]['USER_ID']}'`);

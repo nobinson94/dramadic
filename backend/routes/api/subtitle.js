@@ -3,11 +3,11 @@ var mysql = require('mysql');
 
 var router = express.Router();
 let db = require(__DBdir);
-let conn;
 
 router.get('/:videoid', function(req, res, next) {
 	let videoid = parseInt(req.params.videoid);
 	let start = parseInt(req.query.start);
+	let conn;
 
 	db.getConnection()
 	.then((connection)=>{

@@ -5,9 +5,10 @@ var request = require('request');
 
 var router = express.Router();
 let db = require(__DBdir);
-let conn;
+
 router.get('/:videoid', function(req, res, next) {
 	let videoid = parseInt(req.params.videoid);
+	let conn;
 
 	db.getConnection()
 	.then((connection) => {
@@ -26,9 +27,12 @@ router.get('/:videoid', function(req, res, next) {
 		res.send(sql_result[0]);
 	});
 });
+
 router.get('/list/title/:title', function(req, res, next) {
 	let start = parseInt(req.query.start);
 	let title = req.params.title.trim();
+	let conn;
+
 	db.getConnection()
 	.then((connection) => {
 		conn = connection;
@@ -45,8 +49,9 @@ router.get('/list/title/:title', function(req, res, next) {
 		res.send(sql_result);
 	})
 });
-router.get('/list/all', function(req, res, next) {
 
+router.get('/list/all', function(req, res, next) {
+	let conn;
 	let start = parseInt(req.query.start);
 	
 	db.getConnection()
@@ -63,6 +68,7 @@ router.get('/list/all', function(req, res, next) {
 	})
 	.then((sql_result) => {
 		console.log(sql_result);
+		conn.release();
 		res.send(sql_result);
 	})
 });
@@ -89,9 +95,10 @@ router.get('/list/category/:category', function(req,res,next) {
 		res.send(sql_result);
 	})
 });
+
 router.get('/num/includeWord/:word', function(req, res, next) {
 	let word = "("+req.params.word+")";
-
+	let conn;
 	db.getConnection()
 	.then((connection)=> {
 		conn = connection;
@@ -111,6 +118,7 @@ router.get('/includeWord/:word', function(req, res, next) {
 	let word = "("+req.params.word+")";
 	let start = parseInt(req.query.start);
 	let data = [];
+	let conn;
 
 	db.getConnection()
 	.then((connection) => {
@@ -144,6 +152,7 @@ router.get('/includeWord/:word', function(req, res, next) {
 			item.text = result[i].text;
 			data.push(item);
 		}
+		conn.release();
 		res.send(data);
 	});
 });
@@ -203,6 +212,7 @@ router.get('/:videoid/scriptnum/:scriptnum', function(req, res, next) {
 				WHERE ${sentence_cond} and Video_id = ${videoid}
 			`;
 			return conn.query(sql);
+
 		}).then((sql_result)=>{
 			let st = encodeSec(sql_result[0].Start_time);
 			data.sentence = sql_result.map((result)=>{

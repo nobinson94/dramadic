@@ -9,9 +9,11 @@ let db = require(__DBdir);
 router.post('/', function(req, res, next) {
 	let post_data = req.body;
 	let email = post_data['id'];
+	let conn;
 
 	db.getConnection()
 	.then((connection) => {
+		conn = connection;
 		let sql = `
 			SELECT *
 			FROM USER_INFO_TB
@@ -30,6 +32,7 @@ router.post('/', function(req, res, next) {
 			level: sql_result[0].USER_LEVEL, 
 		}
 		if (user_data.lang === null) user_data.lang = 1;
+		conn.release();
 		res.send(user_data);
 	});
 })

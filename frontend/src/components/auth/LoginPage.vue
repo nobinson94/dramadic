@@ -74,7 +74,8 @@ export default {
 			this.$router.go(this.$router.currentRoute);
 		}
 	}
-}
+};
+
 </script>
 
 <style scoped>

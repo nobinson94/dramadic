@@ -13,10 +13,6 @@ var cors = require('cors');
 var index = require('./routes');
 var modules = require('./modules');
 
-var passport = require('passport');
-var passportjs = require('./passport.js');
-var LocalStrategy = require('passport-local').Strategy;
-
 var app = express();
 
 // view engine setup
@@ -38,12 +34,9 @@ app.use(session({
     	maxAge: 1000 * 60 * 60 // 쿠키 유효기간 1시간
   	}
 })); // 세션 활성화
-app.use(passport.initialize());
-app.use(passport.session());
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
-
-passportjs.setup(passport);
 
 app.use('/', index);
 app.use('/module', modules);

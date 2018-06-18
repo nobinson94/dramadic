@@ -66,11 +66,14 @@ const actions = {
         } else if(res.data==2) {
           alert('아이디를 확인하세요');
         } else {
-          localStorage.setItem("token", res.data);
+          console.log(res.data);
+          alert('로그인 성공');
+          localStorage.setItem("token", res.data.token);
           localStorage.setItem("user_id", res.data.USER_ID);
           localStorage.setItem("user_name", res.data.USER_NAME);
           localStorage.setItem("lang", JSON.stringify(state.languages[res.data.lang]));
           localStorage.setItem("level", res.data.level);
+
           commit(LOGIN_SUCCESS);
         }
     })

@@ -14,6 +14,7 @@ import VideoPage from '@/components/video/VideoPage'
 
 import AdminPage from '@/components/admin/AdminPage'
 import VideoEditPage from '@/components/admin/VideoEditPage'
+import VideoEnrollPage from '@/components/admin/VideoEnrollPage'
 import VideoSelectPage from '@/components/admin/VideoSelectPage'
 
 Vue.use(Router)
@@ -39,6 +40,10 @@ const routes = [
               path: 'edit',
               component: VideoEditPage,
             },
+            {
+              path: 'enroll',
+              component: VideoEnrollPage
+            }
           ]
         },
         {

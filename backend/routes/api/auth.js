@@ -1,9 +1,9 @@
-var express = require('express');
-var mysql = require('mysql');
-var crypto = require('crypto');
-var passport = require('passport');
+const express = require('express');
+const mysql = require('mysql');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
-var router = express.Router();
+const router = express.Router();
 let db = require(__DBdir);
 
 router.post('/signup', function(req, res, next) {
@@ -12,7 +12,6 @@ router.post('/signup', function(req, res, next) {
 	
 	let salt = Math.round((new Date().valueOf() * Math.random())).toString() + "";
   	let hashpass = crypto.createHash("sha512").update(user_info.password + salt).digest("hex").toString();
-	
 	let users = {
     'email' : mysql.escape(user_info.email.trim()),
     'pwd' : mysql.escape(hashpass),
@@ -59,21 +58,63 @@ router.post('/checkduplicate', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
-  //  패스포트 모듈로 인증 시도
-  passport.authenticate('local', function (err, user, info) {
+	let post_data = req.body;
+	let email = mysql.escape(post_data['email']);
+	let password = post_data['password'];
+	let conn;
 
-    if (err) return res.send('error');
-    if (info == '1') return res.send('1'); //비밀번호가 틀린 에러
-    if (info == '2') return res.send('2'); // 아이디가 틀린 에러 
-    if (!user) return res.send('!user');
+	db.getConnection()
+	.then((connection) => {
+		conn = connection;
+		let sql = `
+			SELECT *
+  			FROM USER_INFO_TB
+  			WHERE USER_ID = ${email}
+		`;
 
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
+		return conn.query(sql);
+	}).then((sql_result) => {
+		if(sql_result.length > 0) {
+			let pw = sql_result[0]['USER_PW'];
+  			let salt = sql_result[0]['SALT'];
+  			
+  			let userHashPass = crypto.createHash("sha512").update(password + salt).digest("hex").toString();
+         	
+         	if(userHashPass === pw) {
+  				let token = jwt.sign(
+  						{
+		            		id : sql_result[0]['USER_ID'],
+	            		} 
+	            		,'shhhh'
+  				)
 
-      return res.send(user);
-    });
+  				let data = {
+              		'token' : token,
+              		'USER_ID' : sql_result[0]['USER_ID'],
+            		'USER_NAME' : sql_result[0]['USER_NAME'],
+              		'lang': sql_result[0]['default_lang'],
+              		'level': sql_result[0]['USER_LEVEL'],
+            	};
 
-  })(req, res, next);
+            	conn.query(`UPDATE USER_INFO_TB SET RECENT_LOGIN_DT = now() WHERE USER_ID = '${sql_result[0]['USER_ID']}'`);
+            	console.log("성공적 로그인");
+            	console.log(data.token);
+            	db.releaseConnection(conn);
+            	res.send(data);
+            	
+			} else {
+				//wrong password
+				console.log("wrong password");
+				db.releaseConnection(conn);
+				res.send("1");
+			}
+		} else {
+			//wrong email
+			console.log("wrong email");
+			db.releaseConnection(conn);
+			res.send("2");
+		}
+	});
 });
 
 

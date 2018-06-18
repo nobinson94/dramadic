@@ -47,7 +47,11 @@
               </div>
             </slot>
           </div>
-
+          <div class="err-msg-box" v-if="errors.length">
+            <div class="err-msg" v-for="error in errors">
+              {{ error }}              
+            </div>            
+          </div>
           <div class="modal-footer">
             <slot name="footer">
               <button class="modal-default-button btn btn-outline-primary" @click="enrollVideo">
@@ -64,7 +68,9 @@
   </transition>
 
 </template>
+
 <script>
+
 export default {
   data () {
     return {
@@ -74,7 +80,8 @@ export default {
         category: '',
         scriptfile: null,
         videofile: null,
-      }
+      },
+      errors: [],
     }
   },
 	created() {
@@ -90,26 +97,40 @@ export default {
 		hideModal() {
 			this.$store.commit('hideNewVideoModal');
 		},
+    checkForm() {
+      this.errors = [];
+      if(!this.file.main_title) this.errors.push('Write main title of new video');
+      if(!this.file.sub_title) this.errors.push('Write sub title of new video');
+      if(!this.file.category) this.errors.push('Choose the category of new video');
+    },
     enrollVideo() {
-      console.log("UPLOAD START");
-      let formData = new FormData();
-      formData.append('main_title', this.file.main_title);
-      formData.append('sub_title', this.file.sub_title);
-      formData.append('category', this.file.category);
-      formData.append('videofile', this.file.videofile);
-      formData.append('scriptfile', this.file.scriptfile);
-      let baseURL = this.$http.options.root;
-      this.$http.post(`${baseURL}/api/upload/tmp`, 
-        formData ,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+      this.checkForm();
+      if(this.errors.length === 0) {
+        console.log("UPLOAD START");
+        
+        let formData = new FormData();
+        formData.append('maintitle', this.file.main_title);
+        formData.append('subtitle', this.file.sub_title);
+        formData.append('category', this.file.category);
+        formData.append('videofile', this.file.videofile);
+        //formData.append('scriptfile', this.file.scriptfile);
+
+        let baseURL = this.$http.options.root;
+        this.$http.post(`${baseURL}/api/upload/tmp`, 
+          formData ,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
           }
-        }
-      ).then((response) => {
-        console.log(response);
-        console.log("UPLOAD END");
-      })
+        ).then((response) => {
+          console.log(response);
+          console.log("UPLOAD SUCCESS");
+        })
+        .catch(()=> {
+          console.log("UPLOAD FAIL");
+        })
+      }
     },
     processScriptFile(event) {
       this.file.scriptfile = event.target.files[0];
@@ -118,8 +139,10 @@ export default {
       this.file.videofile = event.target.files[0];
     }
   }
-}
+};
+
 </script>
+
 <style scoped>
 .modal-mask {
   position: fixed;

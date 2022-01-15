@@ -24,7 +24,7 @@
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "serve-favicon": "~2.4.5",
-    "shelljs": "^0.8.1",
+    "shelljs": "^0.8.5",
     "tmp": "0.0.33",
     "urlencode": "^1.1.0",
     "video-stitch": "^1.4.0",
